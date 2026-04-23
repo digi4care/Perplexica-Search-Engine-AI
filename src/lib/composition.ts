@@ -37,10 +37,18 @@ export function getSearchBackend(): SearchBackend {
   return _searchBackend;
 }
 
-// --- Session factory ---
+// --- Session registry ---
+
+const activeSessions = new Map<string, SearchSession>();
 
 export function createSession(): SearchSession {
-  return SessionManager.createSession();
+  const session = SessionManager.createSession();
+  activeSessions.set(session.id, session);
+  return session;
+}
+
+export function getSession(id: string): SearchSession | undefined {
+  return activeSessions.get(id);
 }
 
 // --- Agent factories ---
