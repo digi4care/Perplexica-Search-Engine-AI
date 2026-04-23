@@ -1,10 +1,8 @@
 import ModelRegistry from '@/lib/models/registry';
 import { ModelWithProvider } from '@/lib/models/types';
-import SessionManager from '@/lib/session';
 import { ChatTurnMessage } from '@/lib/types';
 import { SearchSources } from '@/lib/agents/search/types';
-import { SearxngSearchBackend } from '@/lib/adapters';
-import APISearchAgent from '@/lib/agents/search/api';
+import { createApiSearchAgent, createSession, getSearchBackend } from '@/lib/composition';
 
 interface ChatRequestBody {
   optimizationMode: 'speed' | 'balanced' | 'quality';
@@ -48,10 +46,10 @@ export const POST = async (req: Request) => {
         : { role: 'assistant', content: msg[1] };
     });
 
-    const session = SessionManager.createSession();
+    const session = createSession();
 
-    const searchBackend = new SearxngSearchBackend();
-    const agent = new APISearchAgent(() => SessionManager.createSession());
+    const searchBackend = getSearchBackend();
+    const agent = createApiSearchAgent();
     agent.searchAsync(session, {
       chatHistory: history,
       config: {
