@@ -1,6 +1,6 @@
 services:
-  vane:
-    image: itzcrazykns1337/vane:latest
+  perplexica:
+    image: digi4care/perplexica-search-engine-ai:latest
     build:
       context: .
     ports:
@@ -11,4 +11,4 @@ services:
 
 volumes:
   data:
-    name: 'vane-data'
+    name: 'perplexica-data'

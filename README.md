@@ -49,7 +49,7 @@ All user-facing features are preserved: web/academic/social search, chat with st
 docker run -d -p 3000:3000 \
   -v perplexica-data:/home/vane/data \
   --name perplexica \
-  ghcr.io/digi4care/perplexica-search-engine-ai:latest
+  digi4care/perplexica-search-engine-ai:latest
 ```
 
 Open http://localhost:3000 and configure your settings.
@@ -61,7 +61,7 @@ docker run -d -p 3000:3000 \
   -e SEARXNG_API_URL=http://your-searxng-url:8080 \
   -v perplexica-data:/home/vane/data \
   --name perplexica \
-  ghcr.io/digi4care/perplexica-search-engine-ai:slim-latest
+  digi4care/perplexica-search-engine-ai:slim-latest
 ```
 
 Your SearxNG instance needs JSON format enabled and Wolfram Alpha search engine enabled.
