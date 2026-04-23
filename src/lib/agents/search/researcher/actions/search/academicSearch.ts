@@ -43,6 +43,7 @@ const academicSearchAction: ResearchAction<typeof schema> = {
     const results = await executeSearch({
       llm: additionalConfig.llm,
       embedding: additionalConfig.embedding,
+      searchBackend: additionalConfig.searchBackend,
       mode: additionalConfig.mode,
       queries: input.queries,
       researchBlock: researchBlock,

@@ -1,11 +1,11 @@
-import BaseEmbedding from "../models/base/embedding";
+import type { EmbeddingModel } from '@/lib/ports';
 import UploadManager from "./manager";
 import computeSimilarity from "../utils/computeSimilarity";
 import { Chunk } from "../types";
 import { hashObj } from '../utils/hash';
 
 type UploadStoreParams = {
-    embeddingModel: BaseEmbedding<any>;
+    embeddingModel: EmbeddingModel;
     fileIds: string[];
 }
 
@@ -17,7 +17,7 @@ type StoreRecord = {
 }
 
 class UploadStore {
-    embeddingModel: BaseEmbedding<any>;
+    embeddingModel: EmbeddingModel;
     fileIds: string[];
     records: StoreRecord[] = [];
 

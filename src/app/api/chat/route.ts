@@ -2,6 +2,7 @@ import { z } from 'zod';
 import ModelRegistry from '@/lib/models/registry';
 import { ModelWithProvider } from '@/lib/models/types';
 import SearchAgent from '@/lib/agents/search';
+import { DrizzleMessageStore, SearxngSearchBackend } from '@/lib/adapters';
 import SessionManager from '@/lib/session';
 import { ChatTurnMessage } from '@/lib/types';
 import { SearchSources } from '@/lib/agents/search/types';
@@ -149,7 +150,9 @@ export const POST = async (req: Request) => {
       }
     });
 
-    const agent = new SearchAgent();
+    const messageStore = new DrizzleMessageStore();
+    const searchBackend = new SearxngSearchBackend();
+    const agent = new SearchAgent(messageStore);
     const session = SessionManager.createSession();
 
     const responseStream = new TransformStream();
@@ -218,6 +221,7 @@ export const POST = async (req: Request) => {
       config: {
         llm,
         embedding: embedding,
+        searchBackend,
         sources: body.sources as SearchSources[],
         mode: body.optimizationMode,
         fileIds: body.files,

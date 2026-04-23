@@ -1,0 +1,26 @@
+{
+  "version": 1,
+  "focus": null,
+  "blocker": null,
+  "lastSync": null,
+  "lastHandoffAt": null,
+  "regression": {
+    "phase": 0,
+    "build": 0,
+    "schedule": 0
+  },
+  "updatedAt": "2026-04-23T16:12:48.159Z",
+  "guardian": {
+    "enabled": false,
+    "autoNudge": true,
+    "repeatNudgeCount": 0,
+    "suppressNextAutoNudge": false,
+    "beadsMode": "shared",
+    "lastSnapshotAt": "2026-04-23T16:12:48.159Z",
+    "blockedCount": 2,
+    "activeId": "Perplexica-Search-Engine-AI-929",
+    "activeTitle": "Decouple Researcher from direct DB access",
+    "nextId": "Perplexica-Search-Engine-AI-ev4",
+    "nextTitle": "Fix ModelRegistry.updateProvider: push instead of replace"
+  }
+}

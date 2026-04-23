@@ -1,6 +1,6 @@
 import type z from 'zod';
 import type { Message } from '../types';
-import type { GenerateOptions, Tool, StreamTextOutput } from '../models/types';
+import type { GenerateOptions, Tool, StreamTextOutput, GenerateObjectInput } from '../models/types';
 
 /**
  * Port interface for LLM chat model operations.
@@ -9,20 +9,15 @@ import type { GenerateOptions, Tool, StreamTextOutput } from '../models/types';
  * - generateObject: classifier, picker/extractor, widget agents
  * - streamText: writer, researcher agent loop
  *
- * Callers receive typed objects directly, not wrapped in {object: T}.
+ * The method signatures match BaseLLM<CONFIG> exactly so that any BaseLLM
+ * instance satisfies this interface without an adapter class (structural typing).
  */
 export interface ChatModel {
   /**
    * Generate a structured object matching the given Zod schema.
    * Used by classifier, search result picker, widget agents.
    */
-  generateObject<T>(
-    input: {
-      messages: Message[];
-      schema: z.ZodTypeAny;
-      options?: GenerateOptions;
-    },
-  ): Promise<T>;
+  generateObject<T>(input: GenerateObjectInput): Promise<z.infer<T>>;
 
   /**
    * Stream text output, optionally with tool calling.

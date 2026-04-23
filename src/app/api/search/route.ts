@@ -3,6 +3,7 @@ import { ModelWithProvider } from '@/lib/models/types';
 import SessionManager from '@/lib/session';
 import { ChatTurnMessage } from '@/lib/types';
 import { SearchSources } from '@/lib/agents/search/types';
+import { SearxngSearchBackend } from '@/lib/adapters';
 import APISearchAgent from '@/lib/agents/search/api';
 
 interface ChatRequestBody {
@@ -49,13 +50,14 @@ export const POST = async (req: Request) => {
 
     const session = SessionManager.createSession();
 
-    const agent = new APISearchAgent();
-
+    const searchBackend = new SearxngSearchBackend();
+    const agent = new APISearchAgent(() => SessionManager.createSession());
     agent.searchAsync(session, {
       chatHistory: history,
       config: {
         embedding: embeddings,
         llm: llm,
+        searchBackend,
         sources: body.sources,
         mode: body.optimizationMode,
         fileIds: [],

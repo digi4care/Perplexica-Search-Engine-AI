@@ -1,26 +1,22 @@
 import { ResearcherOutput, SearchAgentInput } from './types';
-import SessionManager from '@/lib/session';
+import type { MessageStore, SearchSession } from '@/lib/ports';
 import { classify } from './classifier';
 import Researcher from './researcher';
 import { getWriterPrompt } from '@/lib/prompts/search/writer';
 import { WidgetExecutor } from './widgets';
-import db from '@/lib/db';
-import { messages } from '@/lib/db/schema';
-import { and, eq, gt } from 'drizzle-orm';
 import { TextBlock } from '@/lib/types';
-import { getTokenCount } from '@/lib/utils/splitText';
 
 class SearchAgent {
-  async searchAsync(session: SessionManager, input: SearchAgentInput) {
-    const exists = await db.query.messages.findFirst({
-      where: and(
-        eq(messages.chatId, input.chatId),
-        eq(messages.messageId, input.messageId),
-      ),
+  constructor(private messageStore: MessageStore) {}
+
+  async searchAsync(session: SearchSession, input: SearchAgentInput) {
+    const exists = await this.messageStore.findMessage({
+      chatId: input.chatId,
+      messageId: input.messageId,
     });
 
     if (!exists) {
-      await db.insert(messages).values({
+      await this.messageStore.insertMessage({
         chatId: input.chatId,
         messageId: input.messageId,
         backendId: session.id,
@@ -30,26 +26,13 @@ class SearchAgent {
         responseBlocks: [],
       });
     } else {
-      await db
-        .delete(messages)
-        .where(
-          and(eq(messages.chatId, input.chatId), gt(messages.id, exists.id)),
-        )
-        .execute();
-      await db
-        .update(messages)
-        .set({
-          status: 'answering',
-          backendId: session.id,
-          responseBlocks: [],
-        })
-        .where(
-          and(
-            eq(messages.chatId, input.chatId),
-            eq(messages.messageId, input.messageId),
-          ),
-        )
-        .execute();
+      await this.messageStore.deleteMessagesAfter(input.chatId, exists.id);
+      await this.messageStore.updateMessage({
+        chatId: input.chatId,
+        messageId: input.messageId,
+        status: 'answering',
+        responseBlocks: [],
+      });
     }
 
     const classification = await classify({
@@ -173,19 +156,12 @@ class SearchAgent {
 
     session.emit('end', {});
 
-    await db
-      .update(messages)
-      .set({
-        status: 'completed',
-        responseBlocks: session.getAllBlocks(),
-      })
-      .where(
-        and(
-          eq(messages.chatId, input.chatId),
-          eq(messages.messageId, input.messageId),
-        ),
-      )
-      .execute();
+    await this.messageStore.updateMessage({
+      chatId: input.chatId,
+      messageId: input.messageId,
+      status: 'completed',
+      responseBlocks: session.getAllBlocks(),
+    });
   }
 }
 
