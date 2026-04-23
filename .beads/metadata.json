@@ -1,0 +1,7 @@
+{
+  "database": "dolt",
+  "backend": "dolt",
+  "dolt_mode": "server",
+  "dolt_database": "Perplexica_Search_Engine_AI",
+  "project_id": "237798ae-bc7a-4673-8ae8-d0f6780f1098"
+}
