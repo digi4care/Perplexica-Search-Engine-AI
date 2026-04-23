@@ -1,21 +1,34 @@
 # Perplexica Search Engine AI
 
-A **privacy-focused AI answering engine** refactored with clean hexagonal architecture, full test coverage, and SOLID principles.
+## Origins & Credit
 
-> **Attribution:** This project is a refactored fork of [Vane](https://github.com/ItzCrazyKns/Vane) by [ItzCrazyKns](https://github.com/ItzCrazyKns), which itself was a fork of [Perplexica](https://github.com/ItzCrazyKns/Perplexica). The original work — including the search orchestration, multi-provider support, streaming UI, and widget system — is entirely theirs. This repository takes that foundation and rebuilds it with proper architectural boundaries and testability.
+This project would not exist without the work of **[ItzCrazyKns](https://github.com/ItzCrazyKns)**, who created [Vane](https://github.com/ItzCrazyKns/Vane) (originally [Perplexica](https://github.com/ItzCrazyKns/Perplexica)) — a privacy-focused AI answering engine that combines SearxNG with multiple LLM providers to deliver cited, streamed answers.
 
-## What Changed from the Original
+Everything you see running in this project — the search orchestration, multi-provider support, streaming UI, widgets, upload pipeline, and Docker setup — started as their code. Full credit for the product and its features belongs to the original author.
 
-This is not a drop-in replacement. It is a ground-up refactor of the internal architecture while preserving all user-facing features:
+This repository is an independent fork that takes that foundation in a different direction.
 
-- **Hexagonal architecture** — domain logic isolated behind port/adapter interfaces, no infrastructure leaks into business logic
-- **Full test coverage** — Vitest-based test suite with smoke, unit, integration, and e2e layers
-- **Typed events** — no more `any`-typed event bus; all streaming events are compile-time checked
-- **Decomposed frontend state** — the 848-line `useChat` hook split into focused, composable hooks
-- **Provider layer fixed** — ModelRegistry caching, `updateProvider` bug resolved, normalized adapter pattern
-- **VectorStore abstraction** — embedding storage behind a port interface, ready for sqlite-vec integration
+## About This Fork
 
-All existing features are preserved: web/academic/social search, chat with streaming, file uploads, multi-provider AI support, widgets, and Docker deployment.
+This is **not** a drop-in replacement for Vane. It is a **ground-up architectural refactor** that rebuilds the internals around a different engineering philosophy:
+
+- **Code must earn its complexity.** Every abstraction, every layer, every interface has to justify itself by solving a real problem — not a hypothetical one.
+- **Tests are the contract.** If it is not tested, it does not exist. Behavior is verified before it is shipped.
+- **Dependencies flow inward.** Domain logic never imports infrastructure. Routes never contain business logic. Every external concern is behind an interface.
+- **No sacred code.** If a module cannot be tested or understood in isolation, it gets decomposed until it can.
+
+### What Changed Internally
+
+- **Hexagonal architecture** — domain logic isolated behind port/adapter interfaces
+- **Full test coverage** — Vitest-based test suite (smoke, unit, integration, e2e)
+- **Typed events** — compile-time checked streaming events, no `any`-typed bus
+- **Decomposed frontend state** — the 848-line `useChat` hook split into focused hooks
+- **Provider layer fixed** — ModelRegistry caching, `updateProvider` bug resolved
+- **VectorStore abstraction** — embedding storage behind a port, ready for sqlite-vec
+
+### What Did Not Change
+
+All user-facing features are preserved: web/academic/social search, chat with streaming, file uploads, multi-provider AI support, widgets, and Docker deployment.
 
 ## Features
 
