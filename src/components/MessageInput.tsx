@@ -1,6 +1,6 @@
 import { cn } from '@/lib/utils';
 import { ArrowUp } from 'lucide-react';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import TextareaAutosize from 'react-textarea-autosize';
 import AttachSmall from './MessageInputActions/AttachSmall';
 import { useChat } from '@/lib/hooks/useChat';
@@ -11,15 +11,12 @@ const MessageInput = () => {
   const [copilotEnabled, setCopilotEnabled] = useState(false);
   const [message, setMessage] = useState('');
   const [textareaRows, setTextareaRows] = useState(1);
-  const [mode, setMode] = useState<'multi' | 'single'>('single');
 
-  useEffect(() => {
-    if (textareaRows >= 2 && message && mode === 'single') {
-      setMode('multi');
-    } else if (!message && mode === 'multi') {
-      setMode('single');
-    }
-  }, [textareaRows, mode, message]);
+  const mode = useMemo<'multi' | 'single'>(() => {
+    if (textareaRows >= 2 && message) return 'multi';
+    if (!message) return 'single';
+    return 'single';
+  }, [textareaRows, message]);
 
   const inputRef = useRef<HTMLTextAreaElement | null>(null);
 

@@ -1,6 +1,7 @@
 'use client';
 
 import { Wind } from 'lucide-react';
+import Image from 'next/image';
 import { useEffect, useState } from 'react';
 import { getApproxLocation } from '@/lib/actions';
 
@@ -94,11 +95,13 @@ const WeatherWidget = () => {
     });
   };
 
+  /* eslint-disable react-hooks/exhaustive-deps */
   useEffect(() => {
     updateWeather();
     const intervalId = setInterval(updateWeather, 30 * 1000);
     return () => clearInterval(intervalId);
   }, []);
+  /* eslint-enable react-hooks/exhaustive-deps */
 
   return (
     <div className="bg-light-secondary dark:bg-dark-secondary rounded-2xl border border-light-200 dark:border-dark-200 shadow-sm shadow-light-200/10 dark:shadow-black/25 flex flex-row items-center w-full h-24 min-h-[96px] max-h-[96px] px-3 py-2 gap-3">
@@ -123,10 +126,12 @@ const WeatherWidget = () => {
       ) : (
         <>
           <div className="flex flex-col items-center justify-center w-16 min-w-16 max-w-16 h-full">
-            <img
+            <Image
               src={`/weather-ico/${data.icon}.svg`}
               alt={data.condition}
               className="h-10 w-auto"
+              width={40}
+              height={40}
             />
             <span className="text-base font-semibold text-black dark:text-white">
               {data.temperature}°{data.temperatureUnit}

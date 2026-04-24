@@ -1,6 +1,7 @@
 import { Clock, Edit, Share, Trash, FileText, FileDown } from 'lucide-react';
 import { Message } from './ChatWindow';
 import { useEffect, useState, Fragment } from 'react';
+import Link from 'next/link';
 import { formatTimeDifference } from '@/lib/utils';
 import DeleteChat from './DeleteChat';
 import {
@@ -238,12 +239,12 @@ const Navbar = () => {
       <div className="px-4 lg:px-6 py-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center min-w-0">
-            <a
+            <Link
               href="/"
               className="lg:hidden mr-3 p-2 -ml-2 rounded-lg hover:bg-light-secondary dark:hover:bg-dark-secondary transition-colors duration-200"
             >
               <Edit size={18} className="text-black/70 dark:text-white/70" />
-            </a>
+            </Link>
             <div className="hidden lg:flex items-center gap-2 text-black/50 dark:text-white/50 min-w-0">
               <Clock size={14} />
               <span className="text-xs whitespace-nowrap">{timeAgo} ago</span>

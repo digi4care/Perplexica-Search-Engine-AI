@@ -16,9 +16,11 @@ const ThemeSwitcher = ({ className }: { className?: string }) => {
     setTheme(theme);
   };
 
+  /* eslint-disable react-hooks/set-state-in-effect */
   useEffect(() => {
     setMounted(true);
   }, []);
+  /* eslint-enable react-hooks/set-state-in-effect */
 
   useEffect(() => {
     if (isTheme('system')) {
