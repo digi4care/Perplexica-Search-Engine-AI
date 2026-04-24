@@ -35,6 +35,18 @@ const ModelSelect = ({
           providerId: providerId,
           key: modelKey,
         });
+
+        // Persist to config.json as backup (fire-and-forget)
+        fetch('/api/config', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ key: 'preferences.chatModelProviderId', value: providerId }),
+        });
+        fetch('/api/config', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ key: 'preferences.chatModelKey', value: modelKey }),
+        });
       } else {
         const providerId = newValue.split('/')[0];
         const modelKey = newValue.split('/').slice(1).join('/');
@@ -45,6 +57,18 @@ const ModelSelect = ({
         setEmbeddingModelProvider({
           providerId: providerId,
           key: modelKey,
+        });
+
+        // Persist to config.json as backup (fire-and-forget)
+        fetch('/api/config', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ key: 'preferences.embeddingModelProviderId', value: providerId }),
+        });
+        fetch('/api/config', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ key: 'preferences.embeddingModelKey', value: modelKey }),
         });
       }
     } catch (error) {

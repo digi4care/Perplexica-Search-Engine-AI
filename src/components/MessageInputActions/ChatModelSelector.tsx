@@ -60,6 +60,18 @@ const ModelSelector = () => {
     setChatModelProvider({ providerId, key: modelKey });
     localStorage.setItem('chatModelProviderId', providerId);
     localStorage.setItem('chatModelKey', modelKey);
+
+    // Persist to config.json as backup (fire-and-forget)
+    fetch('/api/config', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ key: 'preferences.chatModelProviderId', value: providerId }),
+    });
+    fetch('/api/config', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ key: 'preferences.chatModelKey', value: modelKey }),
+    });
   };
 
   const filteredProviders = orderedProviders

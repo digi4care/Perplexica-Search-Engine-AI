@@ -29,20 +29,43 @@ const mockProviders = () => [
 ];
 
 function mockFetchSuccess(providers: any[] = mockProviders()) {
-  (globalThis.fetch as ReturnType<typeof vi.fn>).mockResolvedValueOnce({
-    ok: true,
-    status: 200,
-    json: () => Promise.resolve({ providers }),
+  (globalThis.fetch as ReturnType<typeof vi.fn>).mockImplementation((url: string) => {
+    if (url === '/api/config') {
+      return Promise.resolve({
+        ok: true,
+        status: 200,
+        json: () => Promise.resolve({ values: { preferences: {} } }),
+      });
+    }
+    if (url === '/api/providers') {
+      return Promise.resolve({
+        ok: true,
+        status: 200,
+        json: () => Promise.resolve({ providers }),
+      });
+    }
+    return Promise.resolve({ ok: false, status: 404, json: () => Promise.resolve({}) });
   });
 }
 
 function mockFetchError(status: number = 500) {
-  (globalThis.fetch as ReturnType<typeof vi.fn>).mockResolvedValueOnce({
-    ok: false,
-    status,
-    json: () => Promise.resolve({}),
+  (globalThis.fetch as ReturnType<typeof vi.fn>).mockImplementation((url: string) => {
+    if (url === '/api/config') {
+      return Promise.resolve({
+        ok: true,
+        status: 200,
+        json: () => Promise.resolve({ values: { preferences: {} } }),
+      });
+    }
+    // /api/providers fails
+    return Promise.resolve({
+      ok: false,
+      status,
+      json: () => Promise.resolve({}),
+    });
   });
 }
+
 
 describe('useChatConfig', () => {
   beforeEach(() => {
@@ -225,7 +248,7 @@ describe('useChatConfig', () => {
 
     renderHook(() => useChatConfig());
 
-    await waitFor(() => expect(globalThis.fetch).toHaveBeenCalledTimes(1));
+    await waitFor(() => expect(globalThis.fetch).toHaveBeenCalled());
 
     expect(globalThis.fetch).toHaveBeenCalledWith('/api/providers', {
       headers: { 'Content-Type': 'application/json' },
@@ -246,9 +269,9 @@ describe('useChatConfig', () => {
   });
 
   it('sets hasError when fetch throws a network error', async () => {
-    (globalThis.fetch as ReturnType<typeof vi.fn>).mockRejectedValueOnce(
-      new Error('Network error'),
-    );
+    (globalThis.fetch as ReturnType<typeof vi.fn>).mockImplementation(() => {
+      throw new Error('Network error');
+    });
 
     const { result } = renderHook(() => useChatConfig());
 
@@ -308,5 +331,78 @@ describe('useChatConfig', () => {
     expect(toast.error).toHaveBeenCalledWith(
       'No embedding models found, pleae configure them in the settings page.',
     );
+  });
+
+  it('falls back to config.json preferences when localStorage is empty', async () => {
+    // No localStorage values set — config.json provides the fallback
+    (globalThis.fetch as ReturnType<typeof vi.fn>).mockImplementation((url: string) => {
+      if (url === '/api/config') {
+        return Promise.resolve({
+          ok: true,
+          status: 200,
+          json: () => Promise.resolve({
+            values: {
+              preferences: {
+                chatModelKey: 'gpt-3.5-turbo',
+                chatModelProviderId: 'openai',
+                embeddingModelKey: 'nomic-embed-text',
+                embeddingModelProviderId: 'ollama',
+              },
+            },
+          }),
+        });
+      }
+      if (url === '/api/providers') {
+        return Promise.resolve({
+          ok: true,
+          status: 200,
+          json: () => Promise.resolve({ providers: mockProviders() }),
+        });
+      }
+      return Promise.resolve({ ok: false, status: 404, json: () => Promise.resolve({}) });
+    });
+
+    const { result } = renderHook(() => useChatConfig());
+
+    await waitFor(() => expect(result.current.isConfigReady).toBe(true));
+
+    // Should use config.json preferences, not just the first available model
+    expect(result.current.chatModelProvider).toEqual({
+      key: 'gpt-3.5-turbo',
+      providerId: 'openai',
+    });
+    expect(result.current.embeddingModelProvider).toEqual({
+      key: 'nomic-embed-text',
+      providerId: 'ollama',
+    });
+  });
+
+  it('does not fetch /api/config when localStorage has all values', async () => {
+    localStorage.setItem('chatModelKey', 'gpt-4');
+    localStorage.setItem('chatModelProviderId', 'openai');
+    localStorage.setItem('embeddingModelKey', 'nomic-embed-text');
+    localStorage.setItem('embeddingModelProviderId', 'ollama');
+
+    let configFetchCalled = false;
+    (globalThis.fetch as ReturnType<typeof vi.fn>).mockImplementation((url: string) => {
+      if (url === '/api/config') {
+        configFetchCalled = true;
+        return Promise.resolve({
+          ok: true,
+          status: 200,
+          json: () => Promise.resolve({ values: { preferences: {} } }),
+        });
+      }
+      return Promise.resolve({
+        ok: true,
+        status: 200,
+        json: () => Promise.resolve({ providers: mockProviders() }),
+      });
+    });
+
+    const { result } = renderHook(() => useChatConfig());
+    await waitFor(() => expect(result.current.isConfigReady).toBe(true));
+
+    expect(configFetchCalled).toBe(false);
   });
 });
