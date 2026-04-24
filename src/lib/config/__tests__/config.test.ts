@@ -1,5 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import type { Config, UIConfigSections, ConfigModelProvider } from '../types';
+import type { Model } from '../../models/types';
 
 // --- Mocks ---
 const mockHashObj = vi.fn((obj: Record<string, unknown>) => 'testhash');
@@ -21,7 +22,7 @@ vi.mock('node:path', () => ({
 }));
 
 vi.mock('@/lib/utils/hash', () => ({
-  hashObj: (...args: unknown[]) => mockHashObj(...args),
+  hashObj: (...args: unknown[]) => mockHashObj(...(args as [Record<string, unknown>])),
 }));
 
 // Must import after vi.mock setup
@@ -470,8 +471,8 @@ describe('configWriter', () => {
     it('removes chat model by key', () => {
       const provider = makeProvider({
         id: 'p1',
-        chatModels: [{ key: 'gpt-4', name: 'GPT-4' } as unknown as ConfigModelProvider],
-        embeddingModels: [{ key: 'text-emb', name: 'Embedding' } as unknown as ConfigModelProvider],
+        chatModels: [{ key: 'gpt-4', name: 'GPT-4' }] as Model[],
+        embeddingModels: [{ key: 'text-emb', name: 'Embedding' }] as Model[],
       });
       const cfg = makeConfig({ modelProviders: [provider] });
       const result = removeProviderModel(cfg, 'p1', 'chat', 'gpt-4');
@@ -482,8 +483,8 @@ describe('configWriter', () => {
     it('removes embedding model by key', () => {
       const provider = makeProvider({
         id: 'p1',
-        chatModels: [{ key: 'gpt-4', name: 'GPT-4' } as unknown as ConfigModelProvider],
-        embeddingModels: [{ key: 'text-emb', name: 'Embedding' } as unknown as ConfigModelProvider],
+        chatModels: [{ key: 'gpt-4', name: 'GPT-4' }] as Model[],
+        embeddingModels: [{ key: 'text-emb', name: 'Embedding' }] as Model[],
       });
       const cfg = makeConfig({ modelProviders: [provider] });
       const result = removeProviderModel(cfg, 'p1', 'embedding', 'text-emb');
