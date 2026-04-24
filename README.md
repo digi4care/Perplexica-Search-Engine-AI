@@ -49,7 +49,7 @@ All user-facing features are preserved: web/academic/social search, chat with st
 
 ```bash
 docker run -d -p 3000:3000 \
-  -v perplexica-data:/home/vane/data \
+  -v perplexica-data:/home/digi4care/data \
   --name perplexica \
   digi4care/perplexica-search-engine-ai:latest
 ```
@@ -61,7 +61,7 @@ Open http://localhost:3000 and configure your settings.
 ```bash
 docker run -d -p 3000:3000 \
   -e SEARXNG_API_URL=http://your-searxng-url:8080 \
-  -v perplexica-data:/home/vane/data \
+  -v perplexica-data:/home/digi4care/data \
   --name perplexica \
   digi4care/perplexica-search-engine-ai:slim-latest
 ```
