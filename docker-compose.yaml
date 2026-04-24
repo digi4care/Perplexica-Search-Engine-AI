@@ -6,7 +6,7 @@ services:
     ports:
       - '3000:3000'
     volumes:
-      - data:/home/vane/data
+      - data:/home/digi4care/data
     restart: unless-stopped
 
 volumes:
