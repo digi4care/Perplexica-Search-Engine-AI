@@ -1,6 +1,6 @@
 'use client';
 
-/* eslint-disable @next/next/no-img-element */
+ 
 import React, { MutableRefObject } from 'react';
 import { cn } from '@/lib/utils';
 import {

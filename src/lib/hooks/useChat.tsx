@@ -120,7 +120,7 @@ export const ChatProvider = ({ children }: { children: React.ReactNode }) => {
       setNewChatCreated(true);
       setChatId(crypto.randomBytes(20).toString('hex'));
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+     
   }, [chatId]);
 
   // Ready state + reconnect logic

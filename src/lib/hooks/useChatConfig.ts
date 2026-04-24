@@ -139,7 +139,7 @@ export const useChatConfig = (): ChatConfig => {
       setIsConfigReady,
       setHasError,
     );
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+     
   }, []);
 
   return {
