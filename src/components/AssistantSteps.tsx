@@ -66,14 +66,15 @@ const AssistantSteps = ({
   );
   const { researchEnded, loading } = useChat();
 
+  /* eslint-disable react-hooks/set-state-in-effect */
   useEffect(() => {
     if (researchEnded && isLast) {
       setIsExpanded(false);
     } else if (status === 'answering' && isLast) {
       setIsExpanded(true);
     }
-  }, [researchEnded, status]);
-
+  }, [researchEnded, status, isLast]);
+  /* eslint-enable react-hooks/set-state-in-effect */
   if (!block || block.data.subSteps.length === 0) return null;
 
   return (
@@ -195,6 +196,7 @@ const AssistantSteps = ({
                                   className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-md text-xs font-medium bg-light-100 dark:bg-dark-100 text-black/70 dark:text-white/70 border border-light-200 dark:border-dark-200"
                                 >
                                   {faviconUrl && (
+                                    // eslint-disable-next-line @next/next/no-img-element
                                     <img
                                       src={faviconUrl}
                                       alt=""

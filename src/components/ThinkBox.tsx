@@ -11,6 +11,7 @@ interface ThinkBoxProps {
 const ThinkBox = ({ content, thinkingEnded }: ThinkBoxProps) => {
   const [isExpanded, setIsExpanded] = useState(true);
 
+  /* eslint-disable react-hooks/set-state-in-effect */
   useEffect(() => {
     if (thinkingEnded) {
       setIsExpanded(false);
@@ -18,6 +19,7 @@ const ThinkBox = ({ content, thinkingEnded }: ThinkBoxProps) => {
       setIsExpanded(true);
     }
   }, [thinkingEnded]);
+  /* eslint-enable react-hooks/set-state-in-effect */
 
   return (
     <div className="my-4 bg-light-secondary/50 dark:bg-dark-secondary/50 rounded-xl border border-light-200 dark:border-dark-200 overflow-hidden">

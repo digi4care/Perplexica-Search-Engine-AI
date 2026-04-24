@@ -22,9 +22,11 @@ const CodeBlock = ({
 
   const [copied, setCopied] = useState(false);
 
+  /* eslint-disable react-hooks/set-state-in-effect */
   useEffect(() => {
     setMounted(true);
   }, []);
+  /* eslint-enable react-hooks/set-state-in-effect */
 
   const syntaxTheme = useMemo(() => {
     if (!mounted) return lightTheme;

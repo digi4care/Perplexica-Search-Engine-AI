@@ -1,5 +1,6 @@
 import { Discover } from '@/app/discover/page';
 import Link from 'next/link';
+import Image from 'next/image';
 
 const MajorNewsCard = ({
   item,
@@ -16,7 +17,7 @@ const MajorNewsCard = ({
     {isLeft ? (
       <>
         <div className="relative w-80 h-full overflow-hidden rounded-2xl flex-shrink-0">
-          <img
+          <Image
             className="object-cover w-full h-full group-hover:scale-105 transition-transform duration-500"
             src={
               new URL(item.thumbnail).origin +
@@ -24,6 +25,7 @@ const MajorNewsCard = ({
               `?id=${new URL(item.thumbnail).searchParams.get('id')}`
             }
             alt={item.title}
+            unoptimized
           />
         </div>
         <div className="flex flex-col justify-center flex-1 py-4">
@@ -52,7 +54,7 @@ const MajorNewsCard = ({
           </p>
         </div>
         <div className="relative w-80 h-full overflow-hidden rounded-2xl flex-shrink-0">
-          <img
+          <Image
             className="object-cover w-full h-full group-hover:scale-105 transition-transform duration-500"
             src={
               new URL(item.thumbnail).origin +
@@ -60,6 +62,7 @@ const MajorNewsCard = ({
               `?id=${new URL(item.thumbnail).searchParams.get('id')}`
             }
             alt={item.title}
+            unoptimized
           />
         </div>
       </>

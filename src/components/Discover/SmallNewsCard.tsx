@@ -1,5 +1,6 @@
 import { Discover } from '@/app/discover/page';
 import Link from 'next/link';
+import Image from 'next/image';
 
 const SmallNewsCard = ({ item }: { item: Discover }) => (
   <Link
@@ -8,7 +9,7 @@ const SmallNewsCard = ({ item }: { item: Discover }) => (
     target="_blank"
   >
     <div className="relative aspect-video overflow-hidden">
-      <img
+      <Image
         className="object-cover w-full h-full group-hover:scale-105 transition-transform duration-300"
         src={
           new URL(item.thumbnail).origin +
@@ -16,6 +17,7 @@ const SmallNewsCard = ({ item }: { item: Discover }) => (
           `?id=${new URL(item.thumbnail).searchParams.get('id')}`
         }
         alt={item.title}
+        unoptimized
       />
     </div>
     <div className="p-4">

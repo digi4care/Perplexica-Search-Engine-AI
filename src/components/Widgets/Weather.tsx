@@ -2,7 +2,8 @@
 
 import { getMeasurementUnit } from '@/lib/config/clientRegistry';
 import { Wind, Droplets, Gauge } from 'lucide-react';
-import { useMemo, useEffect, useState } from 'react';
+import { useCallback, useMemo, useEffect, useState } from 'react';
+import Image from 'next/image';
 
 type WeatherWidgetProps = {
   location: string;
@@ -232,10 +233,13 @@ const Weather = ({
   const tempUnitLabel = isImperial ? '°F' : '°C';
   const windUnitLabel = isImperial ? 'mph' : 'km/h';
 
-  const formatTemp = (celsius: number) => {
-    if (!Number.isFinite(celsius)) return 0;
-    return Math.round(isImperial ? (celsius * 9) / 5 + 32 : celsius);
-  };
+  const formatTemp = useCallback(
+    (celsius: number) => {
+      if (!Number.isFinite(celsius)) return 0;
+      return Math.round(isImperial ? (celsius * 9) / 5 + 32 : celsius);
+    },
+    [isImperial],
+  );
 
   const formatWind = (speedKmh: number) => {
     if (!Number.isFinite(speedKmh)) return 0;
@@ -286,7 +290,7 @@ const Weather = ({
         precipitation: daily.precipitation_probability_max[idx + 1] || 0,
       };
     });
-  }, [daily, isDarkMode, isImperial]);
+  }, [daily, isDarkMode, formatTemp]);
 
   if (!current || !daily || !daily.time || daily.time.length === 0) {
     return (
@@ -310,10 +314,12 @@ const Weather = ({
       <div className="relative p-4 text-gray-800 dark:text-white">
         <div className="flex items-start justify-between mb-3">
           <div className="flex items-center gap-3">
-            <img
+            <Image
               src={`/weather-ico/${weatherInfo.icon}`}
               alt={weatherInfo.description}
               className="w-16 h-16 drop-shadow-lg"
+              width={64}
+              height={64}
             />
             <div>
               <div className="flex items-baseline gap-1">
@@ -353,10 +359,12 @@ const Weather = ({
               className="flex flex-col items-center bg-gray-800/10 dark:bg-white/10 backdrop-blur-sm rounded-md p-2"
             >
               <p className="text-xs font-medium mb-1">{day.day}</p>
-              <img
+              <Image
                 src={`/weather-ico/${day.icon}`}
                 alt=""
                 className="w-8 h-8 mb-1"
+                width={32}
+                height={32}
               />
               <div className="flex items-center gap-1 text-xs">
                 <span className="font-semibold">{day.high}°</span>

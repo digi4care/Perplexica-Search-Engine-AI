@@ -1,3 +1,4 @@
+import Image from 'next/image';
 import { useEffect, useState } from 'react';
 
 interface Article {
@@ -44,7 +45,7 @@ const NewsArticleWidget = () => {
           className="flex flex-row items-stretch w-full h-full relative overflow-hidden group"
         >
           <div className="relative w-24 min-w-24 max-w-24 h-full overflow-hidden">
-            <img
+            <Image
               className="object-cover w-full h-full bg-light-200 dark:bg-dark-200 group-hover:scale-110 transition-transform duration-300"
               src={
                 new URL(article.thumbnail).origin +
@@ -52,6 +53,7 @@ const NewsArticleWidget = () => {
                 `?id=${new URL(article.thumbnail).searchParams.get('id')}`
               }
               alt={article.title}
+              unoptimized
             />
           </div>
           <div className="flex flex-col justify-center flex-1 px-3 py-2">
