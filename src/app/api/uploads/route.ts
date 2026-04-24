@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import ModelRegistry from '@/lib/models/registry';
+import { getModelRegistry } from '@/lib/composition';
 import UploadManager from '@/lib/uploads/manager';
 
 export async function POST(req: Request) {
@@ -17,7 +17,7 @@ export async function POST(req: Request) {
       );
     }
 
-    const registry = new ModelRegistry();
+    const registry = getModelRegistry();
 
     const model = await registry.loadEmbeddingModel(embeddingModelProvider, embeddingModel);
     

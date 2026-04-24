@@ -1,4 +1,4 @@
-import ModelRegistry from '@/lib/models/registry';
+import { getModelRegistry } from '@/lib/composition';
 import { Model } from '@/lib/models/types';
 import { NextRequest } from 'next/server';
 
@@ -23,7 +23,7 @@ export const POST = async (
       );
     }
 
-    const registry = new ModelRegistry();
+    const registry = getModelRegistry();
 
     await registry.addProviderModel(id, body.type, body);
 
@@ -68,7 +68,7 @@ export const DELETE = async (
       );
     }
 
-    const registry = new ModelRegistry();
+    const registry = getModelRegistry();
 
     await registry.removeProviderModel(id, body.type, body.key);
 

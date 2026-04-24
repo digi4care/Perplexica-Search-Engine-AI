@@ -1,4 +1,4 @@
-import ModelRegistry from '@/lib/models/registry';
+import { getModelRegistry, reloadModelRegistry } from '@/lib/composition';
 import { NextRequest } from 'next/server';
 
 export const DELETE = async (
@@ -19,8 +19,9 @@ export const DELETE = async (
       );
     }
 
-    const registry = new ModelRegistry();
+    const registry = getModelRegistry();
     await registry.removeProvider(id);
+    reloadModelRegistry();
 
     return Response.json(
       {
@@ -63,9 +64,10 @@ export const PATCH = async (
       );
     }
 
-    const registry = new ModelRegistry();
+    const registry = getModelRegistry();
 
     const updatedProvider = await registry.updateProvider(id, name, config);
+    reloadModelRegistry();
 
     return Response.json(
       {

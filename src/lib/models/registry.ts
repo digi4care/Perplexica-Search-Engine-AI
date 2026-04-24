@@ -226,6 +226,16 @@ class ModelRegistry {
     configManager.removeProviderModel(providerId, type, modelKey);
     return;
   }
+
+  /**
+   * Clear all providers and reinitialize from config.
+   * Called after provider CRUD mutations so subsequent
+   * requests see the updated provider list.
+   */
+  reload(): void {
+    this.activeProviders = [];
+    this.initializeActiveProviders();
+  }
 }
 
 export default ModelRegistry;

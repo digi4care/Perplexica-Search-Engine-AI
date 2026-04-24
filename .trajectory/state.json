@@ -9,16 +9,19 @@
     "build": 0,
     "schedule": 0
   },
-  "updatedAt": "2026-04-23T16:33:15.672Z",
+  "updatedAt": "2026-04-24T07:53:02.155Z",
   "guardian": {
-    "enabled": false,
+    "enabled": true,
     "autoNudge": true,
-    "repeatNudgeCount": 0,
+    "repeatNudgeCount": 1,
     "suppressNextAutoNudge": false,
     "beadsMode": "shared",
-    "lastSnapshotAt": "2026-04-23T16:33:15.672Z",
-    "blockedCount": 0,
-    "activeId": "Perplexica-Search-Engine-AI-ev4",
-    "activeTitle": "Fix ModelRegistry.updateProvider: push instead of replace"
+    "lastSnapshotAt": "2026-04-24T07:53:02.154Z",
+    "blockedCount": 4,
+    "nextId": "Perplexica-Search-Engine-AI-1ew",
+    "nextTitle": "Extraheer SSE streaming helper",
+    "activeId": "Perplexica-Search-Engine-AI-l7x",
+    "activeTitle": "ModelRegistry: cached singleton via composition root",
+    "lastNudgedKey": "7991ab13|Perplexica-Search-Engine-AI-l7x|Perplexica-Search-Engine-AI-1ew,Perplexica-Search-Engine-AI-dsr,Perplexica-Search-Engine-AI-dg2|Perplexica-Search-Engine-AI-7g6,Perplexica-Search-Engine-AI-vex,Perplexica-Search-Engine-AI-ok9"
   }
 }
