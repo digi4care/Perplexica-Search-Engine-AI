@@ -1,68 +1,80 @@
 import { describe, it, expect } from 'vitest';
+import { z } from 'zod';
 
 /**
- * Smoke tests for the search API request validation.
+ * Tests for the search API Zod request schema.
  *
- * Unlike the chat route which uses Zod, the search route uses
- * manual validation (lines 23-32 of route.ts). These tests verify
- * the validation logic that exists today.
+ * The search route now uses Zod for validation (previously manual if-checks).
+ * These tests verify the schema behavior.
  */
+
+const bodySchema = z.object({
+  query: z.string().min(1, 'Query is required'),
+  sources: z
+    .array(z.enum(['web', 'discussions', 'academic']))
+    .min(1, 'At least one source is required'),
+  optimizationMode: z.enum(['speed', 'balanced', 'quality']).default('speed'),
+  history: z.array(z.tuple([z.string(), z.string()])).default([]),
+  chatModel: z.object({
+    providerId: z.string(),
+    key: z.string(),
+  }),
+  embeddingModel: z.object({
+    providerId: z.string(),
+    key: z.string(),
+  }),
+  stream: z.boolean().default(false),
+  systemInstructions: z.string().default(''),
+});
+
 describe('Search API request validation', () => {
-  /** Reproduces the validation logic from src/app/api/search/route.ts */
-
-  function validateSearchRequest(body: Record<string, unknown>): {
-    valid: boolean;
-    message?: string;
-  } {
-    if (!body.sources || !body.query) {
-      return { valid: false, message: 'Missing sources or query' };
-    }
-    return { valid: true };
-  }
-
   it('rejects request missing sources', () => {
-    const result = validateSearchRequest({ query: 'test' });
-    expect(result.valid).toBe(false);
-    expect(result.message).toBe('Missing sources or query');
+    const result = bodySchema.safeParse({
+      query: 'test',
+      chatModel: { providerId: 'p', key: 'k' },
+      embeddingModel: { providerId: 'p', key: 'k' },
+    });
+    expect(result.success).toBe(false);
   });
 
   it('rejects request missing query', () => {
-    const result = validateSearchRequest({ sources: [] });
-    expect(result.valid).toBe(false);
+    const result = bodySchema.safeParse({
+      sources: ['web'],
+      chatModel: { providerId: 'p', key: 'k' },
+      embeddingModel: { providerId: 'p', key: 'k' },
+    });
+    expect(result.success).toBe(false);
   });
 
   it('rejects completely empty body', () => {
-    const result = validateSearchRequest({});
-    expect(result.valid).toBe(false);
+    const result = bodySchema.safeParse({});
+    expect(result.success).toBe(false);
   });
 
   it('accepts valid request with sources and query', () => {
-    const result = validateSearchRequest({
-      sources: ['web'],
+    const result = bodySchema.safeParse({
       query: 'What is TypeScript?',
+      sources: ['web'],
+      chatModel: { providerId: 'p', key: 'k' },
+      embeddingModel: { providerId: 'p', key: 'k' },
     });
-    expect(result.valid).toBe(true);
+    expect(result.success).toBe(true);
   });
 
   it('applies defaults: history=[], optimizationMode=speed, stream=false', () => {
-    // Reproduces the default logic from lines 30-32
-    const body: {
-      history?: Array<[string, string]>;
-      optimizationMode?: string;
-      stream?: boolean;
-    } = {};
+    const result = bodySchema.parse({
+      query: 'test',
+      sources: ['web'],
+      chatModel: { providerId: 'p', key: 'k' },
+      embeddingModel: { providerId: 'p', key: 'k' },
+    });
 
-    body.history = body.history || [];
-    body.optimizationMode = body.optimizationMode || 'speed';
-    body.stream = body.stream || false;
-
-    expect(body.history).toEqual([]);
-    expect(body.optimizationMode).toBe('speed');
-    expect(body.stream).toBe(false);
+    expect(result.history).toEqual([]);
+    expect(result.optimizationMode).toBe('speed');
+    expect(result.stream).toBe(false);
   });
 
   it('converts history tuples to ChatTurnMessage format', () => {
-    // Reproduces the history conversion from lines 44-48
     const history: Array<[string, string]> = [
       ['human', 'What is React?'],
       ['assistant', 'React is a UI library.'],
