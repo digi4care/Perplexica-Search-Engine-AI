@@ -1,5 +1,5 @@
 import generateSuggestions from '@/lib/agents/suggestions';
-import ModelRegistry from '@/lib/models/registry';
+import { getModelRegistry } from '@/lib/composition';
 import { ModelWithProvider } from '@/lib/models/types';
 
 interface SuggestionsGenerationBody {
@@ -11,7 +11,7 @@ export const POST = async (req: Request) => {
   try {
     const body: SuggestionsGenerationBody = await req.json();
 
-    const registry = new ModelRegistry();
+    const registry = getModelRegistry();
 
     const llm = await registry.loadChatModel(
       body.chatModel.providerId,

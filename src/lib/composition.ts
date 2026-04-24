@@ -1,3 +1,5 @@
+import ModelRegistry from '@/lib/models/registry';
+
 import SearchAgent from '@/lib/agents/search';
 import APISearchAgent from '@/lib/agents/search/api';
 import { DrizzleMessageStore, SearxngSearchBackend } from '@/lib/adapters';
@@ -51,6 +53,33 @@ export function getSession(id: string): SearchSession | undefined {
   return activeSessions.get(id);
 }
 
+// --- Model registry singleton ---
+
+let _registry: ModelRegistry | undefined;
+
+/**
+ * Lazily-initialized ModelRegistry singleton.
+ * Providers are loaded once and reused across requests.
+ * Call reloadModelRegistry() after provider CRUD mutations.
+ */
+export function getModelRegistry(): ModelRegistry {
+  if (!_registry) {
+    _registry = new ModelRegistry();
+  }
+  return _registry;
+}
+
+/**
+ * Force re-initialization of the ModelRegistry singleton.
+ * Called after provider add/update/delete so the next
+ * request sees the updated provider list.
+ */
+export function reloadModelRegistry(): void {
+  if (_registry) {
+    _registry.reload();
+  }
+}
+
 // --- Agent factories ---
 
 export function createSearchAgent(): SearchAgent {
@@ -67,6 +96,7 @@ export function createApiSearchAgent(): APISearchAgent {
 export function resetAdapters(): void {
   _messageStore = undefined;
   _searchBackend = undefined;
+  _registry = undefined;
 }
 
 /**

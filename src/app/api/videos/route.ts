@@ -1,5 +1,5 @@
 import handleVideoSearch from '@/lib/agents/media/video';
-import ModelRegistry from '@/lib/models/registry';
+import { getModelRegistry } from '@/lib/composition';
 import { ModelWithProvider } from '@/lib/models/types';
 
 interface VideoSearchBody {
@@ -12,7 +12,7 @@ export const POST = async (req: Request) => {
   try {
     const body: VideoSearchBody = await req.json();
 
-    const registry = new ModelRegistry();
+    const registry = getModelRegistry();
 
     const llm = await registry.loadChatModel(
       body.chatModel.providerId,

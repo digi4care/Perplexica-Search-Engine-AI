@@ -1,9 +1,9 @@
-import ModelRegistry from '@/lib/models/registry';
+import { getModelRegistry, reloadModelRegistry } from '@/lib/composition';
 import { NextRequest } from 'next/server';
 
 export const GET = async (req: Request) => {
   try {
-    const registry = new ModelRegistry();
+    const registry = getModelRegistry();
 
     const activeProviders = await registry.getActiveProviders();
 
@@ -48,9 +48,10 @@ export const POST = async (req: NextRequest) => {
       );
     }
 
-    const registry = new ModelRegistry();
+    const registry = getModelRegistry();
 
     const newProvider = await registry.addProvider(type, name, config);
+    reloadModelRegistry();
 
     return Response.json(
       {

@@ -1,8 +1,8 @@
-import ModelRegistry from '@/lib/models/registry';
+
 import { ModelWithProvider } from '@/lib/models/types';
 import { ChatTurnMessage } from '@/lib/types';
 import { SearchSources } from '@/lib/agents/search/types';
-import { createApiSearchAgent, createSession, getSearchBackend } from '@/lib/composition';
+import { createApiSearchAgent, createSession, getSearchBackend, getModelRegistry } from '@/lib/composition';
 
 interface ChatRequestBody {
   optimizationMode: 'speed' | 'balanced' | 'quality';
@@ -30,7 +30,7 @@ export const POST = async (req: Request) => {
     body.optimizationMode = body.optimizationMode || 'speed';
     body.stream = body.stream || false;
 
-    const registry = new ModelRegistry();
+    const registry = getModelRegistry();
 
     const [llm, embeddings] = await Promise.all([
       registry.loadChatModel(body.chatModel.providerId, body.chatModel.key),

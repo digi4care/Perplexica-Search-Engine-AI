@@ -8,6 +8,8 @@ import {
   getSearchBackend,
   createSearchAgent,
   createApiSearchAgent,
+  getModelRegistry,
+  reloadModelRegistry,
   resetAdapters,
   injectAdapters,
 } from '@/lib/composition';
@@ -96,5 +98,47 @@ describe('Composition root', () => {
 
     expect(getMessageStore()).toBe(realStore);
     expect(getSearchBackend()).toBe(mockBackend);
+  });
+});
+
+describe('ModelRegistry singleton', () => {
+  beforeEach(() => {
+    resetAdapters();
+  });
+
+  it('getModelRegistry returns a registry with activeProviders', () => {
+    const registry = getModelRegistry();
+    expect(registry).toBeDefined();
+    expect(typeof registry.loadChatModel).toBe('function');
+    expect(typeof registry.loadEmbeddingModel).toBe('function');
+    expect(Array.isArray(registry.activeProviders)).toBe(true);
+  });
+
+  it('getModelRegistry returns the same instance on repeated calls', () => {
+    const reg1 = getModelRegistry();
+    const reg2 = getModelRegistry();
+    expect(reg1).toBe(reg2);
+  });
+
+  it('resetAdapters clears registry so next call creates new instance', () => {
+    const reg1 = getModelRegistry();
+    resetAdapters();
+    const reg2 = getModelRegistry();
+    expect(reg1).not.toBe(reg2);
+  });
+
+  it('reloadModelRegistry reinitializes providers without creating a new registry', () => {
+    const reg = getModelRegistry();
+    const originalProviders = [...reg.activeProviders];
+    reloadModelRegistry();
+    // Same instance, but providers array may have been rebuilt
+    expect(reg).toBe(getModelRegistry());
+    // Provider count should be the same (same config)
+    expect(reg.activeProviders.length).toBe(originalProviders.length);
+  });
+
+  it('reloadModelRegistry is a no-op when no registry exists yet', () => {
+    // Should not throw
+    expect(() => reloadModelRegistry()).not.toThrow();
   });
 });
