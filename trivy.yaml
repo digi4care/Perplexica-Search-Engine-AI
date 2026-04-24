@@ -1,0 +1,18 @@
+# Trivy configuration
+# https://aquasecurity.github.io/trivy/latest/docs/configuration/
+
+severity:
+  - CRITICAL
+  - HIGH
+
+# Ignore these vulnerabilities (add CVE IDs as needed)
+# ignorefile: .trivyignore
+
+# Skip specific checks
+skip-dirs:
+  - node_modules
+  - .git
+  - .next
+
+db:
+  skip-update: false
