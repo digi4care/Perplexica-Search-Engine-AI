@@ -69,7 +69,7 @@ export const useChatHistory = (
         setFiles,
         setFileIds,
       );
-    } else if (!chatId) {
+    } else if (!chatId || newChatCreated) {
       setIsMessagesLoaded(true);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
