@@ -53,6 +53,7 @@
     "react-textarea-autosize": "^8.5.3",
     "rfc6902": "^5.1.2",
     "sonner": "^1.4.41",
+    "sqlite-vec": "^0.1.9",
     "tailwind-merge": "^2.2.2",
     "yahoo-finance2": "^3.10.2",
     "yet-another-react-lightbox": "^3.17.2",

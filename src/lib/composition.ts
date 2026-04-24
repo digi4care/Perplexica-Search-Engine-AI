@@ -2,9 +2,9 @@ import ModelRegistry from '@/lib/models/registry';
 
 import SearchAgent from '@/lib/agents/search';
 import APISearchAgent from '@/lib/agents/search/api';
-import { DrizzleMessageStore, SearxngSearchBackend } from '@/lib/adapters';
+import { DrizzleMessageStore, SearxngSearchBackend, SqliteVecVectorStore } from '@/lib/adapters';
 import SessionManager from '@/lib/session';
-import type { MessageStore, SearchBackend, SearchSession } from '@/lib/ports';
+import type { MessageStore, SearchBackend, SearchSession, VectorStore } from '@/lib/ports';
 
 /**
  * Composition root for the search pipeline.
@@ -24,6 +24,7 @@ import type { MessageStore, SearchBackend, SearchSession } from '@/lib/ports';
 
 let _messageStore: MessageStore | undefined;
 let _searchBackend: SearchBackend | undefined;
+let _vectorStore: VectorStore | undefined;
 
 export function getMessageStore(): MessageStore {
   if (!_messageStore) {
@@ -37,6 +38,14 @@ export function getSearchBackend(): SearchBackend {
     _searchBackend = new SearxngSearchBackend();
   }
   return _searchBackend;
+}
+
+
+export function getVectorStore(): VectorStore {
+  if (!_vectorStore) {
+    _vectorStore = new SqliteVecVectorStore();
+  }
+  return _vectorStore;
 }
 
 // --- Session registry ---
@@ -96,6 +105,7 @@ export function createApiSearchAgent(): APISearchAgent {
 export function resetAdapters(): void {
   _messageStore = undefined;
   _searchBackend = undefined;
+  _vectorStore = undefined;
   _registry = undefined;
 }
 
@@ -105,7 +115,9 @@ export function resetAdapters(): void {
 export function injectAdapters(adapters: {
   messageStore?: MessageStore;
   searchBackend?: SearchBackend;
+  vectorStore?: VectorStore;
 }): void {
   if (adapters.messageStore) _messageStore = adapters.messageStore;
   if (adapters.searchBackend) _searchBackend = adapters.searchBackend;
+  if (adapters.vectorStore) _vectorStore = adapters.vectorStore;
 }
