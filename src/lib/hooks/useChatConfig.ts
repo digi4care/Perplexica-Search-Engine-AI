@@ -35,6 +35,25 @@ const checkConfig = async (
       'embeddingModelProviderId',
     );
 
+    // Fallback to config.json preferences when localStorage is empty
+    if (!chatModelKey || !chatModelProviderId || !embeddingModelKey || !embeddingModelProviderId) {
+      try {
+        const configRes = await fetch('/api/config');
+        if (configRes.ok) {
+          const configData = await configRes.json();
+          const prefs = configData.values?.preferences;
+          if (prefs) {
+            if (!chatModelKey) chatModelKey = prefs.chatModelKey || null;
+            if (!chatModelProviderId) chatModelProviderId = prefs.chatModelProviderId || null;
+            if (!embeddingModelKey) embeddingModelKey = prefs.embeddingModelKey || null;
+            if (!embeddingModelProviderId) embeddingModelProviderId = prefs.embeddingModelProviderId || null;
+          }
+        }
+      } catch {
+        // Config fetch failed — fall through to default model selection
+      }
+    }
+
     const res = await fetch(`/api/providers`, {
       headers: {
         'Content-Type': 'application/json',

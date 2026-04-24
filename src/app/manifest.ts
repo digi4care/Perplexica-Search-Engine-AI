@@ -2,9 +2,9 @@ import type { MetadataRoute } from 'next';
 
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    name: 'Vane - Direct Your Curiosity',
-    short_name: 'Vane',
-    description: 'Vane is an AI powered answering engine.',
+    name: 'Perplexica - AI Search Engine',
+    short_name: 'Perplexica',
+    description: 'Perplexica is an AI powered search engine',
     start_url: '/',
     display: 'standalone',
     background_color: '#0a0a0a',

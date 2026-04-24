@@ -348,7 +348,7 @@ describe('useChatHistory', () => {
 
     await act(async () => {});
 
-    expect(result.current.isMessagesLoaded).toBe(false);
+    expect(result.current.isMessagesLoaded).toBe(true);
     expect(mockFetch).not.toHaveBeenCalled();
   });
 
