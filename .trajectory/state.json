@@ -9,19 +9,19 @@
     "build": 0,
     "schedule": 0
   },
-  "updatedAt": "2026-04-24T08:20:42.402Z",
+  "updatedAt": "2026-04-24T08:30:58.457Z",
   "guardian": {
     "enabled": true,
     "autoNudge": true,
     "repeatNudgeCount": 1,
     "suppressNextAutoNudge": false,
     "beadsMode": "shared",
-    "lastSnapshotAt": "2026-04-24T08:20:42.401Z",
-    "blockedCount": 1,
-    "nextId": "Perplexica-Search-Engine-AI-dsr",
-    "nextTitle": "Provider adapter deduplicatie",
-    "activeId": "Perplexica-Search-Engine-AI-7g6",
-    "activeTitle": "Extraheer SearchService uit /api/search route",
+    "lastSnapshotAt": "2026-04-24T08:30:58.456Z",
+    "blockedCount": 0,
+    "nextId": "Perplexica-Search-Engine-AI-ok9",
+    "nextTitle": "Integratietests voor /api/chat en /api/search",
+    "activeId": "Perplexica-Search-Engine-AI-dsr",
+    "activeTitle": "Provider adapter deduplicatie",
     "lastNudgedKey": "2ccd9631|Perplexica-Search-Engine-AI-7g6,Perplexica-Search-Engine-AI-vex|Perplexica-Search-Engine-AI-dsr,Perplexica-Search-Engine-AI-aqr,Perplexica-Search-Engine-AI-dg2|Perplexica-Search-Engine-AI-ok9"
   }
 }

@@ -4,7 +4,7 @@ import { Model, ModelList, ProviderMetadata } from '../../types';
 import BaseEmbedding from '../../base/embedding';
 import BaseModelProvider from '../../base/provider';
 import BaseLLM from '../../base/llm';
-import GroqLLM from './groqLLM';
+import OpenAILLM from '../openai/openaiLLM';
 
 interface GroqConfig {
   apiKey: string;
@@ -76,7 +76,7 @@ class GroqProvider extends BaseModelProvider<GroqConfig> {
       throw new Error('Error Loading Groq Chat Model. Invalid Model Selected');
     }
 
-    return new GroqLLM({
+    return new OpenAILLM({
       apiKey: this.config.apiKey,
       model: key,
       baseURL: 'https://api.groq.com/openai/v1',
