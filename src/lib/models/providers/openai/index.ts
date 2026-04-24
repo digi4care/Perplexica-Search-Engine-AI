@@ -1,11 +1,10 @@
 import { UIConfigField } from '@/lib/config/types';
 import { getConfiguredModelProviderById } from '@/lib/config/serverRegistry';
 import { Model, ModelList, ProviderMetadata } from '../../types';
-import OpenAIEmbedding from './openaiEmbedding';
+import * as sdk from '../../sdk/openai';
+import BaseLLM from '../../base/llm';
 import BaseEmbedding from '../../base/embedding';
 import BaseModelProvider from '../../base/provider';
-import BaseLLM from '../../base/llm';
-import OpenAILLM from './openaiLLM';
 
 interface OpenAIConfig {
   apiKey: string;
@@ -173,11 +172,7 @@ class OpenAIProvider extends BaseModelProvider<OpenAIConfig> {
       );
     }
 
-    return new OpenAILLM({
-      apiKey: this.config.apiKey,
-      model: key,
-      baseURL: this.config.baseURL,
-    });
+    return sdk.createChatModel(this.config, key);
   }
 
   async loadEmbeddingModel(key: string): Promise<BaseEmbedding<any>> {
@@ -190,11 +185,7 @@ class OpenAIProvider extends BaseModelProvider<OpenAIConfig> {
       );
     }
 
-    return new OpenAIEmbedding({
-      apiKey: this.config.apiKey,
-      model: key,
-      baseURL: this.config.baseURL,
-    });
+    return sdk.createEmbeddingModel(this.config, key);
   }
 
   static parseAndValidate(raw: any): OpenAIConfig {

@@ -4,7 +4,7 @@ import { Model, ModelList, ProviderMetadata } from '../../types';
 import BaseEmbedding from '../../base/embedding';
 import BaseModelProvider from '../../base/provider';
 import BaseLLM from '../../base/llm';
-import AnthropicLLM from './anthropicLLM';
+import * as sdk from '../../sdk/anthropic';
 
 interface AnthropicConfig {
   apiKey: string;
@@ -78,11 +78,7 @@ class AnthropicProvider extends BaseModelProvider<AnthropicConfig> {
       );
     }
 
-    return new AnthropicLLM({
-      apiKey: this.config.apiKey,
-      model: key,
-      baseURL: 'https://api.anthropic.com/v1',
-    });
+    return sdk.createChatModel(this.config, key);
   }
 
   async loadEmbeddingModel(key: string): Promise<BaseEmbedding<any>> {

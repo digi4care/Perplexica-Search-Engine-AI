@@ -1,11 +1,10 @@
 import { UIConfigField } from '@/lib/config/types';
 import { getConfiguredModelProviderById } from '@/lib/config/serverRegistry';
 import { Model, ModelList, ProviderMetadata } from '../../types';
-import GeminiEmbedding from './geminiEmbedding';
+import * as sdk from '../../sdk/gemini';
 import BaseEmbedding from '../../base/embedding';
 import BaseModelProvider from '../../base/provider';
 import BaseLLM from '../../base/llm';
-import GeminiLLM from './geminiLLM';
 
 interface GeminiConfig {
   apiKey: string;
@@ -94,11 +93,7 @@ class GeminiProvider extends BaseModelProvider<GeminiConfig> {
       );
     }
 
-    return new GeminiLLM({
-      apiKey: this.config.apiKey,
-      model: key,
-      baseURL: 'https://generativelanguage.googleapis.com/v1beta/openai',
-    });
+    return sdk.createChatModel(this.config, key);
   }
 
   async loadEmbeddingModel(key: string): Promise<BaseEmbedding<any>> {
@@ -111,11 +106,7 @@ class GeminiProvider extends BaseModelProvider<GeminiConfig> {
       );
     }
 
-    return new GeminiEmbedding({
-      apiKey: this.config.apiKey,
-      model: key,
-      baseURL: 'https://generativelanguage.googleapis.com/v1beta/openai',
-    });
+    return sdk.createEmbeddingModel(this.config, key);
   }
 
   static parseAndValidate(raw: any): GeminiConfig {

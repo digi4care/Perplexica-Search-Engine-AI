@@ -4,8 +4,7 @@ import BaseModelProvider from '../../base/provider';
 import { Model, ModelList, ProviderMetadata } from '../../types';
 import BaseLLM from '../../base/llm';
 import BaseEmbedding from '../../base/embedding';
-import OpenAILLM from '../openai/openaiLLM';
-import OpenAIEmbedding from '../openai/openaiEmbedding';
+import * as sdk from '../../sdk/openaiCompatible';
 
 interface LMStudioConfig {
   baseURL: string;
@@ -93,11 +92,11 @@ class LMStudioProvider extends BaseModelProvider<LMStudioConfig> {
       );
     }
 
-    return new OpenAILLM({
-      apiKey: 'lm-studio',
-      model: key,
+    return sdk.createChatModel({
       baseURL: this.normalizeBaseURL(this.config.baseURL),
-    });
+      apiKey: 'lm-studio',
+      name: 'lmstudio',
+    }, key);
   }
 
   async loadEmbeddingModel(key: string): Promise<BaseEmbedding<any>> {
@@ -110,11 +109,11 @@ class LMStudioProvider extends BaseModelProvider<LMStudioConfig> {
       );
     }
 
-    return new OpenAIEmbedding({
-      apiKey: 'lm-studio',
-      model: key,
+    return sdk.createEmbeddingModel({
       baseURL: this.normalizeBaseURL(this.config.baseURL),
-    });
+      apiKey: 'lm-studio',
+      name: 'lmstudio',
+    }, key);
   }
 
   static parseAndValidate(raw: any): LMStudioConfig {

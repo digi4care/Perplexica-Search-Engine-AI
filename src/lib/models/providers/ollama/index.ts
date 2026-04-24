@@ -4,8 +4,7 @@ import BaseModelProvider from '../../base/provider';
 import { Model, ModelList, ProviderMetadata } from '../../types';
 import BaseLLM from '../../base/llm';
 import BaseEmbedding from '../../base/embedding';
-import OllamaLLM from './ollamaLLM';
-import OllamaEmbedding from './ollamaEmbedding';
+import * as sdk from '../../sdk/ollama';
 
 interface OllamaConfig {
   baseURL: string;
@@ -88,10 +87,7 @@ class OllamaProvider extends BaseModelProvider<OllamaConfig> {
       );
     }
 
-    return new OllamaLLM({
-      baseURL: this.config.baseURL,
-      model: key,
-    });
+    return sdk.createChatModel(this.config, key);
   }
 
   async loadEmbeddingModel(key: string): Promise<BaseEmbedding<any>> {
@@ -104,10 +100,7 @@ class OllamaProvider extends BaseModelProvider<OllamaConfig> {
       );
     }
 
-    return new OllamaEmbedding({
-      model: key,
-      baseURL: this.config.baseURL,
-    });
+    return sdk.createEmbeddingModel(this.config, key);
   }
 
   static parseAndValidate(raw: any): OllamaConfig {

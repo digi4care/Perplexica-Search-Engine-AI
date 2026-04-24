@@ -3,9 +3,8 @@ import { getConfiguredModelProviderById } from '@/lib/config/serverRegistry';
 import BaseModelProvider from '../../base/provider';
 import { Model, ModelList, ProviderMetadata } from '../../types';
 import BaseLLM from '../../base/llm';
-import LemonadeLLM from './lemonadeLLM';
 import BaseEmbedding from '../../base/embedding';
-import LemonadeEmbedding from './lemonadeEmbedding';
+import * as sdk from '../../sdk/openaiCompatible';
 
 interface LemonadeConfig {
   baseURL: string;
@@ -102,11 +101,11 @@ class LemonadeProvider extends BaseModelProvider<LemonadeConfig> {
       );
     }
 
-    return new LemonadeLLM({
-      apiKey: this.config.apiKey || 'not-needed',
-      model: key,
+    return sdk.createChatModel({
       baseURL: this.config.baseURL,
-    });
+      apiKey: this.config.apiKey || 'not-needed',
+      name: 'lemonade',
+    }, key);
   }
 
   async loadEmbeddingModel(key: string): Promise<BaseEmbedding<any>> {
@@ -119,11 +118,11 @@ class LemonadeProvider extends BaseModelProvider<LemonadeConfig> {
       );
     }
 
-    return new LemonadeEmbedding({
-      apiKey: this.config.apiKey || 'not-needed',
-      model: key,
+    return sdk.createEmbeddingModel({
       baseURL: this.config.baseURL,
-    });
+      apiKey: this.config.apiKey || 'not-needed',
+      name: 'lemonade',
+    }, key);
   }
 
   static parseAndValidate(raw: any): LemonadeConfig {
