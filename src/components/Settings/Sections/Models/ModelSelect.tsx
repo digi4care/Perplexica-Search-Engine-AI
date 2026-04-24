@@ -79,6 +79,11 @@ const ModelSelect = ({
     }
   };
 
+  const descriptionText =
+    type === 'chat'
+      ? 'The model used for all your searches and conversations.'
+      : 'Embeddings power search quality. Changing this may affect existing search results.';
+
   return (
     <section className="rounded-xl border border-light-200 bg-light-primary/80 p-4 lg:p-6 transition-colors dark:border-dark-200 dark:bg-dark-primary/80">
       <div className="space-y-3 lg:space-y-5">
@@ -89,9 +94,7 @@ const ModelSelect = ({
           </h4>
         </div>
         <p className="text-[11px] lg:text-xs text-black/50 dark:text-white/50">
-          {type === 'chat'
-            ? 'The model used for all your searches and conversations.'
-            : 'Embeddings power search quality. Changing this may affect existing search results.'
+          {descriptionText}
         </p>
         <Select
           value={selectedModel}
