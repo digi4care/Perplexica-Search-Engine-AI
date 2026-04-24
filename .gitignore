@@ -44,3 +44,14 @@ certificates
 .dolt/
 *.db
 .beads-credential-key
+
+
+# Docker
+.docker/
+
+# Dark Factory / Trajectory
+.trajectory/
+dark-factory-suite-*.tgz
+
+# TypeScript build info
+tsconfig.tsbuildinfo
