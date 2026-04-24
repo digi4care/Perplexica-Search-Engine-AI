@@ -19,12 +19,14 @@ This is **not** a drop-in replacement for Vane. It is a **ground-up architectura
 
 ### What Changed Internally
 
-- **Hexagonal architecture** — domain logic isolated behind port/adapter interfaces
-- **Full test coverage** — Vitest-based test suite (smoke, unit, integration, e2e)
+- **Hexagonal architecture** — domain logic isolated behind 6 port interfaces in `src/lib/ports/`
+- **Composition root** — single file (`src/lib/composition.ts`) wires all dependencies
+- **110 tests across 16 files** — Vitest suite: smoke, unit, integration (services 93%, composition 84%, agents 85%, HTTP 87%)
 - **Typed events** — compile-time checked streaming events, no `any`-typed bus
-- **Decomposed frontend state** — the 848-line `useChat` hook split into focused hooks
-- **Provider layer fixed** — ModelRegistry caching, `updateProvider` bug resolved
+- **Provider layer fixed** — ModelRegistry cached singleton, `updateProvider` bug resolved
 - **VectorStore abstraction** — embedding storage behind a port, ready for sqlite-vec
+- **Route thinning** — chat route 255→80 lines, search route 209→105 lines, reconnect 93→27 lines
+- **7 merged PRs** across 3 epics: test foundation, search orchestration, route thinning + provider fix
 
 ### What Did Not Change
 
@@ -113,18 +115,34 @@ curl -X POST http://localhost:3000/api/chat \
 
 ## Architecture
 
-The system follows a hexagonal (ports & adapters) architecture with four layers:
+Hexagonal (ports & adapters) with four layers. All dependencies flow inward.
 
-| Layer | Responsibility |
-|-------|---------------|
-| **Presentation** | Next.js routes (thin adapters) + React components with decomposed hooks |
-| **Application** | Use-case services: `ChatService`, `SearchService`, `UploadService`, `ConfigService` |
-| **Domain** | Pure TypeScript — search agent loop, researcher, classifier, widgets, types |
-| **Infrastructure** | Adapter implementations: AI providers, SearxNG, SQLite/Drizzle, filesystem, VectorStore |
+```
+src/lib/
+  ports/          6 interfaces: ChatModel, EmbeddingModel, MessageStore,
+                  SearchBackend, VectorStore, SessionEmitter
+  adapters/       DrizzleMessageStore, SearxngSearchBackend
+  services/       ChatService, SearchService (application use cases)
+  http/           sessionStream (SSE streaming helper)
+  composition.ts  Composition root — wires all ports to adapters
+  models/         ModelRegistry + 8 AI provider adapters
+  agents/search/  SearchAgent, APISearchAgent, Researcher (constructor-injected)
+  config/         ConfigManager, server/client registries
+  db/             Drizzle ORM + SQLite schema
+```
 
-All dependencies flow inward. The domain layer has zero infrastructure imports.
+### Test Coverage (refactored modules)
 
-See [planning/04-architecture.md](planning/04-architecture.md) for the full architecture diagram and decision log.
+| Module | Statements | Lines |
+|--------|-----------|-------|
+| services/ | 92.7% | 92.5% |
+| http/ | 86.5% | 91.4% |
+| composition.ts | 84% | 82.6% |
+| agents/search/ | 85.2% | 85.2% |
+
+Overall project coverage is 22% — the gap is in unreached modules (baseSearch, widgets, providers) targeted for post-MVP refactoring.
+
+See [planning/04-architecture.md](planning/04-architecture.md) for the full architecture decision log.
 
 ## Development
 
