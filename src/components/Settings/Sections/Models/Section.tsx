@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Zap, Server } from 'lucide-react';
 import AddProvider from './AddProviderDialog';
 import {
   ConfigModelProvider,
@@ -19,31 +20,51 @@ const Models = ({
 
   return (
     <div className="flex-1 space-y-6 overflow-y-auto py-6">
-      <div className="flex flex-col px-6 gap-y-4">
-        <h3 className="text-xs lg:text-xs text-black/70 dark:text-white/70">
-          Select models
-        </h3>
-        <ModelSelect
-          providers={values.filter((p) =>
-            p.chatModels.some((m) => m.key != 'error'),
-          )}
-          type="chat"
-        />
-        <ModelSelect
-          providers={values.filter((p) =>
-            p.embeddingModels.some((m) => m.key != 'error'),
-          )}
-          type="embedding"
-        />
-      </div>
-      <div className="border-t border-light-200 dark:border-dark-200" />
-      <div className="flex flex-row justify-between items-center px-6 ">
-        <p className="text-xs lg:text-xs text-black/70 dark:text-white/70">
-          Manage connections
+      {/* Active Models Section */}
+      <div className="mx-6 rounded-xl bg-sky-500/5 dark:bg-sky-500/5 p-4 lg:p-5">
+        <div className="flex items-center gap-2 mb-1">
+          <Zap className="w-4 h-4 text-sky-500" />
+          <h3 className="text-sm font-medium text-black/80 dark:text-white/80">
+            Active Models
+          </h3>
+        </div>
+        <p className="text-xs text-black/50 dark:text-white/50 mb-4 ml-6">
+          Choose which AI models to use for your searches and conversations.
+          These take effect immediately.
         </p>
-        <AddProvider modelProviders={fields} setProviders={setProviders} />
+        <div className="flex flex-col gap-y-4">
+          <ModelSelect
+            providers={values.filter((p) =>
+              p.chatModels.some((m) => m.key != 'error'),
+            )}
+            type="chat"
+          />
+          <ModelSelect
+            providers={values.filter((p) =>
+              p.embeddingModels.some((m) => m.key != 'error'),
+            )}
+            type="embedding"
+          />
+        </div>
       </div>
-      <div className="flex flex-col px-6 gap-y-4">
+
+      {/* Provider Connections Section */}
+      <div className="flex flex-col gap-y-4 px-6 pt-2">
+        <div>
+          <div className="flex items-center gap-2 mb-1">
+            <Server className="w-4 h-4 text-black/40 dark:text-white/40" />
+            <h3 className="text-sm font-medium text-black/80 dark:text-white/80">
+              Provider Connections
+            </h3>
+          </div>
+          <p className="text-xs text-black/50 dark:text-white/50 ml-6">
+            Manage your AI service connections. Add API keys, configure servers,
+            and control which models are available.
+          </p>
+        </div>
+        <div className="flex flex-row justify-end">
+          <AddProvider modelProviders={fields} setProviders={setProviders} />
+        </div>
         {providers.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-12 px-4 rounded-lg border-2 border-dashed border-light-200 dark:border-dark-200 bg-light-secondary/10 dark:bg-dark-secondary/10">
             <div className="p-3 rounded-full bg-sky-500/10 dark:bg-sky-500/10 mb-3">

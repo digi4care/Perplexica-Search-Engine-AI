@@ -82,16 +82,17 @@ const ModelSelect = ({
   return (
     <section className="rounded-xl border border-light-200 bg-light-primary/80 p-4 lg:p-6 transition-colors dark:border-dark-200 dark:bg-dark-primary/80">
       <div className="space-y-3 lg:space-y-5">
-        <div>
+        <div className="flex items-center gap-2">
+          <div className="w-2 h-2 rounded-full bg-sky-500" />
           <h4 className="text-sm lg:text-sm text-black dark:text-white">
-            Select {type === 'chat' ? 'Chat Model' : 'Embedding Model'}
+            {type === 'chat' ? 'Active Chat Model' : 'Active Embedding Model'}
           </h4>
-          <p className="text-[11px] lg:text-xs text-black/50 dark:text-white/50">
-            {type === 'chat'
-              ? 'Choose which model to use for generating responses'
-              : 'Choose which model to use for generating embeddings'}
-          </p>
         </div>
+        <p className="text-[11px] lg:text-xs text-black/50 dark:text-white/50">
+          {type === 'chat'
+            ? 'The model used for all your searches and conversations.'
+            : 'The model used to create text embeddings for search and similarity.'}
+        </p>
         <Select
           value={selectedModel}
           onChange={(event) => handleSave(event.target.value)}
