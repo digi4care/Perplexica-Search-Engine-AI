@@ -2,10 +2,10 @@ import { UIConfigField } from '@/lib/config/types';
 import { getConfiguredModelProviderById } from '@/lib/config/serverRegistry';
 import BaseModelProvider from '../../base/provider';
 import { Model, ModelList, ProviderMetadata } from '../../types';
-import LMStudioLLM from './lmstudioLLM';
 import BaseLLM from '../../base/llm';
 import BaseEmbedding from '../../base/embedding';
-import LMStudioEmbedding from './lmstudioEmbedding';
+import OpenAILLM from '../openai/openaiLLM';
+import OpenAIEmbedding from '../openai/openaiEmbedding';
 
 interface LMStudioConfig {
   baseURL: string;
@@ -93,7 +93,7 @@ class LMStudioProvider extends BaseModelProvider<LMStudioConfig> {
       );
     }
 
-    return new LMStudioLLM({
+    return new OpenAILLM({
       apiKey: 'lm-studio',
       model: key,
       baseURL: this.normalizeBaseURL(this.config.baseURL),
@@ -110,7 +110,7 @@ class LMStudioProvider extends BaseModelProvider<LMStudioConfig> {
       );
     }
 
-    return new LMStudioEmbedding({
+    return new OpenAIEmbedding({
       apiKey: 'lm-studio',
       model: key,
       baseURL: this.normalizeBaseURL(this.config.baseURL),
