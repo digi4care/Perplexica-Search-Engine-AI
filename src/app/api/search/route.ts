@@ -1,4 +1,5 @@
 
+import { SSE_HEADERS } from '@/lib/http/sessionStream';
 import { ModelWithProvider } from '@/lib/models/types';
 import { ChatTurnMessage } from '@/lib/types';
 import { SearchSources } from '@/lib/agents/search/types';
@@ -192,11 +193,7 @@ export const POST = async (req: Request) => {
     });
 
     return new Response(stream, {
-      headers: {
-        'Content-Type': 'text/event-stream',
-        'Cache-Control': 'no-cache, no-transform',
-        Connection: 'keep-alive',
-      },
+      headers: SSE_HEADERS,
     });
   } catch (err: any) {
     console.error(`Error in getting search results: ${err.message}`);
