@@ -91,7 +91,7 @@ const ModelSelect = ({
         <p className="text-[11px] lg:text-xs text-black/50 dark:text-white/50">
           {type === 'chat'
             ? 'The model used for all your searches and conversations.'
-            : 'The model used to create text embeddings for search and similarity.'}
+            : 'Embeddings power search quality. Changing this may affect existing search results.'
         </p>
         <Select
           value={selectedModel}

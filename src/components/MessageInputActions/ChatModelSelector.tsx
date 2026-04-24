@@ -1,5 +1,6 @@
 'use client';
 
+import { toast } from 'sonner';
 import { Cpu, Loader2, Search } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Popover, PopoverButton, PopoverPanel } from '@headlessui/react';
@@ -72,6 +73,12 @@ const ModelSelector = () => {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ key: 'preferences.chatModelKey', value: modelKey }),
     });
+
+    const provider = providers.find((p) => p.id === providerId);
+    const model = provider?.chatModels.find((m) => m.key === modelKey);
+    if (model) {
+      toast.success(`Switched to ${model.name}`);
+    }
   };
 
   const filteredProviders = orderedProviders
@@ -91,9 +98,19 @@ const ModelSelector = () => {
         <>
           <PopoverButton
             type="button"
+            title="Switch model"
             className="active:border-none hover:bg-light-200  hover:dark:bg-dark-200 p-2 rounded-lg focus:outline-none headless-open:text-black dark:headless-open:text-white text-black/50 dark:text-white/50 active:scale-95 transition duration-200 hover:text-black dark:hover:text-white"
           >
-            <Cpu size={16} className="text-sky-500" />
+            <div className="flex items-center gap-1.5">
+              <Cpu size={16} className="text-sky-500" />
+              {chatModelProvider?.key && (
+                <span className="text-[10px] text-black/40 dark:text-white/40 font-medium max-w-[60px] truncate hidden sm:inline">
+                  {providers
+                    .flatMap(p => p.chatModels)
+                    .find(m => m.key === chatModelProvider.key)?.name || chatModelProvider.key}
+                </span>
+              )}
+            </div>
           </PopoverButton>
           <AnimatePresence>
             {open && (
@@ -124,6 +141,11 @@ const ModelSelector = () => {
                     </div>
                   </div>
 
+                  <div className="px-3 pt-2 pb-1">
+                    <p className="text-[10px] text-black/40 dark:text-white/40 uppercase tracking-wider font-medium">
+                      Select model
+                    </p>
+                  </div>
                   <div className="max-h-[320px] overflow-y-auto">
                     {isLoading ? (
                       <div className="flex items-center justify-center py-16">
