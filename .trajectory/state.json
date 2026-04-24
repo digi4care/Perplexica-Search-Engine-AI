@@ -9,19 +9,19 @@
     "build": 0,
     "schedule": 0
   },
-  "updatedAt": "2026-04-24T07:53:02.155Z",
+  "updatedAt": "2026-04-24T08:05:31.332Z",
   "guardian": {
     "enabled": true,
     "autoNudge": true,
     "repeatNudgeCount": 1,
     "suppressNextAutoNudge": false,
     "beadsMode": "shared",
-    "lastSnapshotAt": "2026-04-24T07:53:02.154Z",
-    "blockedCount": 4,
-    "nextId": "Perplexica-Search-Engine-AI-1ew",
-    "nextTitle": "Extraheer SSE streaming helper",
-    "activeId": "Perplexica-Search-Engine-AI-l7x",
-    "activeTitle": "ModelRegistry: cached singleton via composition root",
-    "lastNudgedKey": "7991ab13|Perplexica-Search-Engine-AI-l7x|Perplexica-Search-Engine-AI-1ew,Perplexica-Search-Engine-AI-dsr,Perplexica-Search-Engine-AI-dg2|Perplexica-Search-Engine-AI-7g6,Perplexica-Search-Engine-AI-vex,Perplexica-Search-Engine-AI-ok9"
+    "lastSnapshotAt": "2026-04-24T08:05:31.332Z",
+    "blockedCount": 3,
+    "nextId": "Perplexica-Search-Engine-AI-dsr",
+    "nextTitle": "Provider adapter deduplicatie",
+    "activeId": "Perplexica-Search-Engine-AI-1ew",
+    "activeTitle": "Extraheer SSE streaming helper",
+    "lastNudgedKey": "3dd6f1c2|Perplexica-Search-Engine-AI-1ew|Perplexica-Search-Engine-AI-dsr,Perplexica-Search-Engine-AI-aqr,Perplexica-Search-Engine-AI-dg2|Perplexica-Search-Engine-AI-7g6,Perplexica-Search-Engine-AI-vex,Perplexica-Search-Engine-AI-ok9"
   }
 }
