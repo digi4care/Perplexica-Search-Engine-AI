@@ -2,14 +2,8 @@ import { EventEmitter } from 'stream';
 import { applyPatch } from 'rfc6902';
 import { Block } from './types';
 
-const sessions =
-  (global as any)._sessionManagerSessions || new Map<string, SessionManager>();
-if (process.env.NODE_ENV !== 'production') {
-  (global as any)._sessionManagerSessions = sessions;
-}
 
 class SessionManager {
-  private static sessions: Map<string, SessionManager> = sessions;
   readonly id: string;
   private blocks = new Map<string, Block>();
   private events: { event: string; data: any }[] = [];
@@ -19,23 +13,14 @@ class SessionManager {
   constructor(id?: string) {
     this.id = id ?? crypto.randomUUID();
 
+    // Self-cleanup after TTL — callers should release their reference.
     setTimeout(() => {
-      SessionManager.sessions.delete(this.id);
+      this.removeAllListeners();
     }, this.TTL_MS);
   }
 
-  static getSession(id: string): SessionManager | undefined {
-    return this.sessions.get(id);
-  }
-
-  static getAllSessions(): SessionManager[] {
-    return Array.from(this.sessions.values());
-  }
-
   static createSession(): SessionManager {
-    const session = new SessionManager();
-    this.sessions.set(session.id, session);
-    return session;
+    return new SessionManager();
   }
 
   removeAllListeners() {

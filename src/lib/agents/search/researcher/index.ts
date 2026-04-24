@@ -1,14 +1,13 @@
 import { ActionOutput, ResearcherInput, ResearcherOutput } from '../types';
 import { ActionRegistry } from './actions';
 import { getResearcherPrompt } from '@/lib/prompts/search/researcher';
-import SessionManager from '@/lib/session';
+import type { SearchSession } from '@/lib/ports';
 import { Message, ReasoningResearchBlock } from '@/lib/types';
 import formatChatHistoryAsString from '@/lib/utils/formatHistory';
 import { ToolCall } from '@/lib/models/types';
-
 class Researcher {
   async research(
-    session: SessionManager,
+    session: SearchSession,
     input: ResearcherInput,
   ): Promise<ResearcherOutput> {
     let actionOutput: ActionOutput[] = [];
@@ -164,6 +163,7 @@ class Researcher {
       const actionResults = await ActionRegistry.executeAll(finalToolCalls, {
         llm: input.config.llm,
         embedding: input.config.embedding,
+        searchBackend: input.config.searchBackend,
         session: session,
         researchBlockId: researchBlockId,
         fileIds: input.config.fileIds,

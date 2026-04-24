@@ -86,8 +86,8 @@ describe('SessionManager', () => {
       session.emitBlock(block);
       const events = session.getEventsByType('data');
       expect(events).toHaveLength(1);
-      expect(events[0].data.type).toBe('block');
-      expect(events[0].data.block.id).toBe('block-1');
+      expect((events[0].data as Record<string, unknown>).type).toBe('block');
+      expect(((events[0].data as Record<string, unknown>).block as { id: string }).id).toBe('block-1');
     });
   });
 });

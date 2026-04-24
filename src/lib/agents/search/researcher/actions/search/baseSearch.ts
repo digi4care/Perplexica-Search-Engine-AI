@@ -1,7 +1,4 @@
-import BaseEmbedding from '@/lib/models/base/embedding';
-import BaseLLM from '@/lib/models/base/llm';
-import { searchSearxng, SearxngSearchOptions } from '@/lib/searxng';
-import SessionManager from '@/lib/session';
+import type { ChatModel, EmbeddingModel, SearchBackend, SearchOptions, SearchSession } from '@/lib/ports';
 import { Chunk, ResearchBlock, SearchResultsResearchBlock } from '@/lib/types';
 import { SearchAgentConfig } from '../../../types';
 import computeSimilarity from '@/lib/utils/computeSimilarity';
@@ -12,11 +9,12 @@ import { splitText } from '@/lib/utils/splitText';
 export const executeSearch = async (input: {
   queries: string[];
   mode: SearchAgentConfig['mode'];
-  searchConfig?: SearxngSearchOptions;
+  searchConfig?: SearchOptions;
   researchBlock: ResearchBlock;
-  session: InstanceType<typeof SessionManager>;
-  llm: BaseLLM<any>;
-  embedding: BaseEmbedding<any>;
+  session: SearchSession;
+  llm: ChatModel;
+  embedding: EmbeddingModel;
+  searchBackend: SearchBackend;
 }) => {
   const researchBlock = input.researchBlock;
 
@@ -41,7 +39,7 @@ export const executeSearch = async (input: {
     const results: Chunk[] = [];
 
     const search = async (q: string) => {
-      const res = await searchSearxng(q, {
+      const res = await input.searchBackend.search(q, {
         ...(input.searchConfig ? input.searchConfig : {}),
       });
 
@@ -176,7 +174,7 @@ export const executeSearch = async (input: {
     const searchResults: Chunk[] = [];
 
     const search = async (q: string) => {
-      const res = await searchSearxng(q, {
+      const res = await input.searchBackend.search(q, {
         ...(input.searchConfig ? input.searchConfig : {}),
       });
 

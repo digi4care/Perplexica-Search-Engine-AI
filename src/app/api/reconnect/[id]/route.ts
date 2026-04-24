@@ -1,4 +1,4 @@
-import SessionManager from '@/lib/session';
+import { getSession } from '@/lib/composition';
 
 export const POST = async (
   req: Request,
@@ -7,7 +7,7 @@ export const POST = async (
   try {
     const { id } = await params;
 
-    const session = SessionManager.getSession(id);
+    const session = getSession(id);
 
     if (!session) {
       return Response.json({ message: 'Session not found' }, { status: 404 });

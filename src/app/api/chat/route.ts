@@ -1,8 +1,7 @@
 import { z } from 'zod';
 import ModelRegistry from '@/lib/models/registry';
 import { ModelWithProvider } from '@/lib/models/types';
-import SearchAgent from '@/lib/agents/search';
-import SessionManager from '@/lib/session';
+import { createSearchAgent, getSearchBackend, createSession } from '@/lib/composition';
 import { ChatTurnMessage } from '@/lib/types';
 import { SearchSources } from '@/lib/agents/search/types';
 import db from '@/lib/db';
@@ -149,8 +148,9 @@ export const POST = async (req: Request) => {
       }
     });
 
-    const agent = new SearchAgent();
-    const session = SessionManager.createSession();
+    const searchBackend = getSearchBackend();
+    const agent = createSearchAgent();
+    const session = createSession();
 
     const responseStream = new TransformStream();
     const writer = responseStream.writable.getWriter();
@@ -218,6 +218,7 @@ export const POST = async (req: Request) => {
       config: {
         llm,
         embedding: embedding,
+        searchBackend,
         sources: body.sources as SearchSources[],
         mode: body.optimizationMode,
         fileIds: body.files,

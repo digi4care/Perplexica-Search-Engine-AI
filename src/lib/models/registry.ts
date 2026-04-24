@@ -186,10 +186,20 @@ class ModelRegistry {
       };
     }
 
-    this.activeProviders.push({
-      ...updated,
-      provider: instance,
-    });
+    const existingIndex = this.activeProviders.findIndex(
+      (p) => p.id === providerId,
+    );
+    if (existingIndex !== -1) {
+      this.activeProviders[existingIndex] = {
+        ...updated,
+        provider: instance,
+      };
+    } else {
+      this.activeProviders.push({
+        ...updated,
+        provider: instance,
+      });
+    }
 
     return {
       ...updated,

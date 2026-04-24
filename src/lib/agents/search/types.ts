@@ -1,16 +1,15 @@
 import z from 'zod';
-import BaseLLM from '../../models/base/llm';
-import BaseEmbedding from '@/lib/models/base/embedding';
-import SessionManager from '@/lib/session';
-import { ChatTurnMessage, Chunk } from '@/lib/types';
+import type { ChatModel, EmbeddingModel, SearchBackend, SearchSession } from '@/lib/ports';
+import type { ChatTurnMessage, Chunk } from '@/lib/types';
 
 export type SearchSources = 'web' | 'discussions' | 'academic';
 
 export type SearchAgentConfig = {
   sources: SearchSources[];
   fileIds: string[];
-  llm: BaseLLM<any>;
-  embedding: BaseEmbedding<any>;
+  llm: ChatModel;
+  embedding: EmbeddingModel;
+  searchBackend: SearchBackend;
   mode: 'speed' | 'balanced' | 'quality';
   systemInstructions: string;
 };
@@ -27,7 +26,7 @@ export type WidgetInput = {
   chatHistory: ChatTurnMessage[];
   followUp: string;
   classification: ClassifierOutput;
-  llm: BaseLLM<any>;
+  llm: ChatModel;
 };
 
 export type Widget = {
@@ -43,7 +42,7 @@ export type WidgetOutput = {
 };
 
 export type ClassifierInput = {
-  llm: BaseLLM<any>;
+  llm: ChatModel;
   enabledSources: SearchSources[];
   query: string;
   chatHistory: ChatTurnMessage[];
@@ -63,9 +62,10 @@ export type ClassifierOutput = {
 };
 
 export type AdditionalConfig = {
-  llm: BaseLLM<any>;
-  embedding: BaseEmbedding<any>;
-  session: SessionManager;
+  llm: ChatModel;
+  embedding: EmbeddingModel;
+  session: SearchSession;
+  searchBackend: SearchBackend;
 };
 
 export type ResearcherInput = {

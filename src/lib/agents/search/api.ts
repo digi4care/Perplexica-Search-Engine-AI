@@ -1,12 +1,14 @@
-import { ResearcherOutput, SearchAgentInput } from './types';
-import SessionManager from '@/lib/session';
+import type { ResearcherOutput, SearchAgentInput } from './types';
+import type { SearchSession } from '@/lib/ports';
 import { classify } from './classifier';
 import Researcher from './researcher';
 import { getWriterPrompt } from '@/lib/prompts/search/writer';
 import { WidgetExecutor } from './widgets';
 
 class APISearchAgent {
-  async searchAsync(session: SessionManager, input: SearchAgentInput) {
+  constructor(private createSession: () => SearchSession) {}
+
+  async searchAsync(session: SearchSession, input: SearchAgentInput) {
     const classification = await classify({
       chatHistory: input.chatHistory,
       enabledSources: input.config.sources,
@@ -19,7 +21,7 @@ class APISearchAgent {
       chatHistory: input.chatHistory,
       followUp: input.followUp,
       llm: input.config.llm,
-    }).catch((err) => {
+    }).catch((err: unknown) => {
       console.error(`Error executing widgets: ${err}`);
       return [];
     });
@@ -28,7 +30,7 @@ class APISearchAgent {
 
     if (!classification.classification.skipSearch) {
       const researcher = new Researcher();
-      searchPromise = researcher.research(SessionManager.createSession(), {
+      searchPromise = researcher.research(this.createSession(), {
         chatHistory: input.chatHistory,
         followUp: input.followUp,
         classification: classification,
