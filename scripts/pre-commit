@@ -1,0 +1,47 @@
+#!/usr/bin/env bash
+# pre-commit hook: detect accidentally committed secrets
+# Install: cp scripts/pre-commit .git/hooks/pre-commit
+# Or:       ln -sf ../../scripts/pre-commit .git/hooks/pre-commit
+
+set -euo pipefail
+
+RED='\033[0;31m'
+NC='\033[0m'
+
+# Patterns that indicate leaked secrets
+PATTERNS=(
+  'dckr_pat_[a-zA-Z0-9_]'
+  'ghp_[a-zA-Z0-9]{36}'
+  'gho_[a-zA-Z0-9]{36}'
+  'sk-[a-zA-Z0-9]{20,}'
+  'sk_live_[a-zA-Z0-9]'
+  'xox[bpas]-[a-zA-Z0-9-]'
+  'AKIA[0-9A-Z]{16}'
+  '-----BEGIN (RSA |EC |DSA )?PRIVATE KEY-----'
+)
+
+found=0
+
+# Only check staged files (not deleted)
+staged=$(git diff --cached --name-only --diff-filter=ACM 2>/dev/null || true)
+
+if [ -z "$staged" ]; then
+  exit 0
+fi
+
+for pattern in "${PATTERNS[@]}"; do
+  matches=$(echo "$staged" | xargs grep -En "$pattern" 2>/dev/null || true)
+  if [ -n "$matches" ]; then
+    echo -e "${RED}SECRET DETECTED:${NC} possible leaked credential found"
+    echo "$matches"
+    echo ""
+    found=1
+  fi
+done
+
+if [ "$found" -eq 1 ]; then
+  echo "If this is a false positive, commit with: git commit --no-verify"
+  exit 1
+fi
+
+exit 0
