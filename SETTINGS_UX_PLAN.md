@@ -1,5 +1,7 @@
 # Settings UX & Search Language Plan
 
+> Status update 2026-10-13: alle 3 fasen uitgevoerd en bijbehorende Beads-issues gesloten (commits 121c130, 1a497d7, ae1cbcb). `bd ready` toont uitsluitend het huidige planning-update issue als open werk. Notitie: i18n was oorspronkelijk een Non-Goal in planning/03-vision.md, maar is bewust in scope gekomen tijdens de Settings-UX refactor.
+
 ## Problem Statement
 
 De Settings modal heeft meerdere UX en architectuur problemen:

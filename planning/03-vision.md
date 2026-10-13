@@ -1,5 +1,7 @@
 # Product Vision
 
+> Status update 2026-10-13: refactor-visie grotendeels gerealiseerd. Zie planning/index.md voor gemeten metrics.
+
 ## Vision Statement
 For developers maintaining and extending Perplexica who need a reliable, testable codebase, the refactored Perplexica is an AI search engine that delivers clean architectural boundaries and full test coverage, making every subsystem independently verifiable and replaceable. Unlike the current monolithic coupling, we provide SOLID-compliant modules with thin route handlers and injectable dependencies.
 
@@ -69,13 +71,13 @@ We deliver a codebase where every subsystem can be understood, tested, and chang
 
 ## Success Metrics
 
-| Metric | Target | How to Measure |
-|--------|--------|----------------|
-| Core path test coverage | ≥80% line coverage on search, providers, config, session, upload | `vitest --coverage` on src/backend |
-| Zero `any` in backend code | 0 occurrences of `: any` or `as any` in TypeScript strict mode | `grep -r ': any\|as any' src/backend/` returns empty |
-| Max file complexity | No file exceeds 200 lines or cyclomatic complexity 15 | `complexity-report` or lint rules on CI |
-| Module count (deep modules) | ≥15 focused modules replacing current god objects | Count of files in src/backend/core and src/backend/adapters |
-| Route handler LOC | Each route handler ≤50 lines, no business logic | Line count + grep for DB/LLM/session calls in route files |
-| useChat decomposition | ≤150 lines per hook slice, 0 hook exceeds 1 state concern | Line count per file in decomposed hook directory |
-| Type safety enforcement | `strict: true` in tsconfig with zero type errors | `tsc --noEmit` passes cleanly |
-| Dependency injection coverage | 0 direct imports of singletons in core/services | `grep` for ConfigManager.getInstance or direct DB imports in service layer |
+| Metric | Target | How to Measure | Actual (2026-10-13) |
+|--------|--------|----------------|---------------------|
+| Core path test coverage | ≥80% line coverage on search, providers, config, session, upload | `vitest --coverage` on src/lib | 47.31% lines, 47.5% statements, 46.71% functions, 40.46% branches ❌ |
+| Zero `any` in backend code | 0 occurrences of `: any` or `as any` in TypeScript strict mode | `grep -r ': any\|as any' src/lib/` excl. tests | 98 in src/lib excl. tests ❌ |
+| Max file complexity | No file exceeds 200 lines or cyclomatic complexity 15 | `complexity-report` or lint rules on CI | 14 files >200 regels ❌ |
+| Module count (deep modules) | ≥15 focused modules replacing current god objects | Count of files in src/lib/core and src/lib/adapters | Hexagonale structuur met ports/adapters aanwezig ✅ |
+| Route handler LOC | Each route handler ≤50 lines, no business logic | Line count + grep for DB/LLM/session calls in route files | 7 route handlers >50 regels; business logic wel naar services ✅/❌ |
+| useChat decomposition | ≤150 lines per hook slice, 0 hook exceeds 1 state concern | Line count per file in decomposed hook directory | useChatConfig.ts 172, useChatHistory.ts 161, useChatStream.ts 410, useSectionParser.ts 103 ❌ |
+| Type safety enforcement | `strict: true` in tsconfig with zero type errors | `tsc --noEmit` passes cleanly | 0 errors in productiecode; 46 in `__tests__` files ✅/❌ |
+| Dependency injection coverage | 0 direct imports of singletons in core/services | `grep` for ConfigManager.getInstance or direct DB imports in service layer | 0 directe singleton-imports in src/lib/services en src/lib/agents ✅ |

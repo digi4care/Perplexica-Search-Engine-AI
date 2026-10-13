@@ -118,3 +118,26 @@
 - Epic 6 upload stories reference `VectorStore` port instead of direct filesystem access.
 - Post-MVP: `SqliteVecVectorStore` adapter replaces `JsonFileVectorStore` by implementing the same port.
 - No additional production dependency in MVP.
+
+---
+
+## 2026-10-13 — Post-refactor verificatie
+
+**Gehaald:**
+- TypeScript productiecode is type-clean onder strict mode (0 `tsc` errors in productiecode).
+- Dependency-injection metric gehaald: 0 directe `getInstance()` / `ConfigManager.getInstance` aanroepen in `src/lib/services` en `src/lib/agents`.
+- De 848-regel `useChat` god-hook is opgesplitst in `useChatConfig`, `useChatHistory`, `useChatStream` en `useSectionParser`.
+- `baseSearch` is opgesplitst in strategiemodules.
+- `ConfigManager` is opgesplitst in reader/writer/migration modules.
+- `sqlite-vec` VectorStore adapter is geïmplementeerd.
+
+**Niet gehaald:**
+- Coverage blijft steken op 47.31% lines / 47.5% statements / 46.71% functions / 40.46% branches, ver onder het 80%-target.
+- `any`-count in `src/lib` (excl. tests) is 98; visie-target was 0 in backend.
+- 14 files overschrijden de 200-regel limiet; `useChatStream.ts` is 410 regels.
+- Zeven route handlers overschrijden de 50-regel target (weather 206, search 105, discover 98, providers/[id]/models 94, providers/[id] 91, chat 80, config 77). Wel is business logic geëxtraheerd naar services.
+- Upload pipeline cleanup is niet expliciet terug te vinden in de refactor-commits en staat nog open.
+
+**Scope-wijziging:**
+- Internationalisatie (i18n) en whitelabel-functionaliteit zijn na de refactor als nieuwe scope toegevoegd, ondanks dat i18n oorspronkelijk in `03-vision.md` als Non-Goal stond.
+
